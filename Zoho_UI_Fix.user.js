@@ -1,5 +1,5 @@
 // ==UserScript==
-// @name        Zoho Mail UI Fix
+// @name        Zoho UI Fix
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/Zoho_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/Zoho_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/Zoho_UI_Fix.user.js
