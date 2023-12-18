@@ -46,6 +46,12 @@ var CSSMod = /** @class */ (function () {
         css += ".separator {display: none !important}\n"; //
         css += ".date-separator {display: none !important}\n"; //
         css += ".online.both.current-xmpp-contact.open {background-color: unset !important}\n"; //
+        css += ".converse-brand__heading {display: none !important}\n"; //
+        css += ".xmpp-status.d-flex {display: none !important}\n"; //
+        css += "converse-rich-text {display: none !important}\n"; //
+        css += "#chatrooms {display: none !important}\n"; //
+        css += ".chat-msg--with-avatar.chat.delayed.chat-msg.message .show-msg-author-modal {display: none !important}\n"; //
+        css += ".show-msg-author-modal .align-self-center.avatar {display: none !important}\n"; //
         //
         return css;
     };
