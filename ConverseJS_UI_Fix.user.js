@@ -40,7 +40,6 @@ var CSSMod = /** @class */ (function () {
         css += ".chat-msg__content {margin-left: 6px !important;}\n"; //
         css += ".chat-msg__text {margin-left: 36 !important;}\n"; //
         css += ".chat-info.message {display: none !important}\n"; //
-        //css += ".chat-msg--with-avatar .show-msg-author-modal {display: none !important}\n"; //
         css += ".open-chat.cbox-list-item.list-item-link span .avatar {display: none !important}\n"; //
         css += ".chat-status--avatar {display: none !important}\n"; //
         css += ".separator {display: none !important}\n"; //
@@ -50,7 +49,6 @@ var CSSMod = /** @class */ (function () {
         css += ".xmpp-status.d-flex {display: none !important}\n"; //
         css += "converse-rich-text {display: none !important}\n"; //
         css += "#chatrooms {display: none !important}\n"; //
-        css += ".chat-msg--with-avatar.chat.delayed.chat-msg.message .show-msg-author-modal {display: none !important}\n"; //
         css += ".show-msg-author-modal .align-self-center.avatar {display: none !important}\n"; //
         //
         return css;
