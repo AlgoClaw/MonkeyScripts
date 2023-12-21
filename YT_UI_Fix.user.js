@@ -218,8 +218,9 @@ var YtNewUIFix = /** @class */ (function () {
         css += ".ytp-mute-button {padding-top: 00px !important; padding-bottom: 00px !important;}"; // Fix Volume/speaker logo moving down when control height is made small
         //
         //
-        css += ".ytd-watch-metadata[id=owner] {min-width: 300px !important;}";
-        css += "#owner.ytd-watch-metadata     {min-width: 300px !important;}";
+        //css += ".ytd-watch-metadata[id=owner] {min-width: 300px !important;}";
+        //css += "#owner.ytd-watch-metadata     {min-width: 300px !important;}";
+        css += "#owner.ytd-watch-metadata     {min-width: unset !important;}";
         css += ".ytp-volume-slider {min-height: 00px !important; height: 100% !important;}"; // Adjust volume slider to vertical middle of control bar
         css += ".ytp-chrome-controls {line-height: " + ControlHeight + "px !important;}"; // Adjust buttons to vertical middle of control bar
         css += ".ytp-time-display    {line-height: " + ControlHeight + "px !important;}"; // Adjust time to vertical middle of control bar
@@ -366,6 +367,16 @@ var YtNewUIFix = /** @class */ (function () {
         //
         // Outside Video - Other - Sponsor Button
         css += "#categoryPill {display: none !important;}\n";
+        css += "#sponsor-button {display: none !important;}\n";
+        //
+        // Outside Video - Other - Thanks Button
+        css += "[aria-label=Thanks] {display: none !important;}\n";
+        //
+        // Outside Video - Other - Clip Button
+        css += "[aria-label=Clip] {display: none !important;}\n";
+        //
+        // Outside Video - Other - Download Button
+        css += "[aria-label=Download] {display: none !important;}\n";
         //
         // Outside Video - Other - YouTube Premium Popup
         //css += ".ytd-popup-container {display: none !important;}\n";
@@ -403,6 +414,12 @@ var YtNewUIFix = /** @class */ (function () {
         //
         // Outside Video - Live Chat - Pinned donations
         css += "yt-live-chat-ticker-renderer {display: none !important;}\n";
+        //
+        // Outside Video - Channel Name Cutoff
+        css += "ytd-video-owner-renderer {margin-right: unset !important;}\n";
+        css += "ytd-video-owner-renderer {min-width: unset !important;}\n";
+        css += "[id=upload-info] {margin-right: 0px !important;}\n";
+        css += "yt-button-view-model {margin-left: 0px !important;}\n";
         //
         // Homepage -
         //css += ".ytd-rich-grid-renderer.style-scope #header {display: none !important;}\n";
