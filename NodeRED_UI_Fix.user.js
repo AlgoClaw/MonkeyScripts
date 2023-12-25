@@ -37,31 +37,39 @@ var CSSMod = /** @class */ (function () {
     CSSMod.prototype.applyCSSFix = function (css) {
         //
         css += "[id=red-ui-workspace] {display: flex !important;}\n"; //
-        //css += "[id=red-ui-workspace] {flex-wrap: wrap !important;}\n"; //
         css += "[id=red-ui-workspace] {flex-direction: column !important;}\n"; //
-        css += ".red-ui-tab-scroll {display: none !important;}\n"; //
+        //
         css += ".red-ui-tabs {height: unset !important;}\n"; //
         css += ".red-ui-tabs {padding-left: 0px !important;}\n"; //
         css += ".red-ui-tabs {margin-bottom: 0px !important;}\n"; //
         css += ".red-ui-tabs {overflow: unset !important;}\n"; //
+        //
+        css += ".red-ui-tab-scroll {display: none !important;}\n"; //
+        //
         css += ".red-ui-tabs-scroll-container {height: fit-content !important;}\n"; //
         css += ".red-ui-tabs-scroll-container {overflow-x: unset !important;}\n"; //
         css += ".red-ui-tabs-scroll-container {overflow-y: unset !important;}\n"; //
+        //
         css += "[id=red-ui-workspace-tabs] {width: 100% !important;}\n"; //
         css += "[id=red-ui-workspace-tabs] {opacity: unset !important;}\n"; //
         css += "[id=red-ui-workspace-tabs] {display: flex !important;}\n"; //
         css += "[id=red-ui-workspace-tabs] {flex-wrap: wrap !important;}\n"; //
         css += "[id=red-ui-workspace-tabs] {height: fit-content !important;}\n"; //
+        //
         css += ".red-ui-tab {margin-left: 1px !important;}\n"; //
         css += ".red-ui-tab {margin-right: 1px !important;}\n"; //
         css += ".red-ui-tab {width: unset !important;}\n"; //
+        //
         css += ".red-ui-tab-label {padding-left: 1px !important;}\n"; //
         css += ".red-ui-tab-label {padding-right: 1px !important;}\n"; //
+        //
         css += ".red-ui-tabs-fade {display: none !important;}\n"; //
+        //
         css += "[id=red-ui-workspace-chart] {top: 0px !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {position: relative !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {overflow: scroll !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {margin-bottom: 25px !important;}\n"; //
+        //
         css += "[id=red-ui-workspace-footer] {height: 25px !important;}\n"; //
         //
         // Option 1 (no plus and menu buttons for tabs)
