@@ -68,9 +68,14 @@ var CSSMod = /** @class */ (function () {
         css += "[id=red-ui-workspace-chart] {top: 0px !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {position: relative !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {overflow: scroll !important;}\n"; //
-        css += "[id=red-ui-workspace-chart] {margin-bottom: 25px !important;}\n"; //
+                css += "[id=red-ui-workspace-chart] {margin-bottom: 25px !important;}\n"; //
         //
         css += "[id=red-ui-workspace-footer] {height: 25px !important;}\n"; //
+        //
+        // Shift up to use header space
+        css += "[id=red-ui-main-container] {top: 0px !important;}\n"; //
+        css += "[id=red-ui-sidebar-separator] {top: 0px !important;}\n"; //
+        css += "[id=red-ui-sidebar] {top: 40px !important;}\n"; //
         //
         // Option 1 (no plus and menu buttons for tabs)
         css += ".red-ui-tabs {padding-right: 0px !important;}\n"; //
@@ -79,6 +84,27 @@ var CSSMod = /** @class */ (function () {
         //
         // Option 2 (plus and menu buttons for tabs)
         //css += ".red-ui-tabs {padding-right: 64px !important;}\n"; //
+        //
+        // Node List (left panel) - More Compact
+        css += ".red-ui-palette-node {margin-top:    2px !important;}\n"; //
+        css += ".red-ui-palette-node {margin-bottom: 2px !important;}\n"; //
+        css += ".red-ui-palette-node {margin-left:  10px !important;}\n"; //
+        css += ".red-ui-palette-node {margin-right: 10px !important;}\n"; //
+        css += ".red-ui-palette-node {width: calc(100% - 20px) !important;}\n"; //
+        css += ".red-ui-palette-node {height: 100% !important;}\n"; //
+        css += ".red-ui-palette-label {margin-top:    0px !important;}\n"; //
+        css += ".red-ui-palette-label {margin-bottom: 0px !important;}\n"; //
+        //
+        // Palette List - More Compact
+        css += ".red-ui-editableList-item-content {padding-top:    2px !important;}\n"; //
+        css += ".red-ui-editableList-item-content {padding-bottom: 2px !important;}\n"; //
+        //
+        // Right Sidebar Buttons
+        css += ".red-ui-tab-link-button {display: inline-block !important;}\n"; //
+        css += ".red-ui-tab-link-button {margin-left:  0px !important;}\n"; //
+        css += ".red-ui-tab-link-button {margin-right: 0px !important;}\n"; //
+        css += ".red-ui-tab-link-button {width: 20px !important;}\n"; //
+        css += ".red-ui-tab-link-button-menu {display: none !important;}\n"; //
         return css;
     };
     return CSSMod;
