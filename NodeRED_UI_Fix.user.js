@@ -68,14 +68,14 @@ var CSSMod = /** @class */ (function () {
         css += "[id=red-ui-workspace-chart] {top: 0px !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {position: relative !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {overflow: scroll !important;}\n"; //
-                css += "[id=red-ui-workspace-chart] {margin-bottom: 25px !important;}\n"; //
+        css += "[id=red-ui-workspace-chart] {margin-bottom: 25px !important;}\n"; //
         //
         css += "[id=red-ui-workspace-footer] {height: 25px !important;}\n"; //
         //
         // Shift up to use header space
-        css += "[id=red-ui-main-container] {top: 0px !important;}\n"; //
-        css += "[id=red-ui-sidebar-separator] {top: 0px !important;}\n"; //
-        css += "[id=red-ui-sidebar] {top: 40px !important;}\n"; //
+        //css += "[id=red-ui-main-container] {top: 0px !important;}\n"; //
+        //css += "[id=red-ui-sidebar-separator] {top: 0px !important;}\n"; //
+        //css += "[id=red-ui-sidebar] {top: 40px !important;}\n"; //
         //
         // Option 1 (no plus and menu buttons for tabs)
         css += ".red-ui-tabs {padding-right: 0px !important;}\n"; //
