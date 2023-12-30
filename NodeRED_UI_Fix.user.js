@@ -91,7 +91,9 @@ var CSSMod = /** @class */ (function () {
         css += ".red-ui-palette-node {margin-left:  10px !important;}\n"; //
         css += ".red-ui-palette-node {margin-right: 10px !important;}\n"; //
         css += ".red-ui-palette-node {width: calc(100% - 20px) !important;}\n"; //
+        css += ".red-ui-palette-node {max-width: 150px !important;}\n"; //
         css += ".red-ui-palette-node {height: 100% !important;}\n"; //
+        css += ".red-ui-palette-node {max-height: 40px !important;}\n"; //
         css += ".red-ui-palette-label {margin-top:    0px !important;}\n"; //
         css += ".red-ui-palette-label {margin-bottom: 0px !important;}\n"; //
         //
