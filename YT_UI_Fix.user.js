@@ -406,6 +406,9 @@ var YtNewUIFix = /** @class */ (function () {
         // Outside Video - Video Recommendation List - Category buttons above the videos
         css += "yt-related-chip-cloud-renderer.ytd-watch-next-secondary-results-renderer.style-scope {display: none !important;}\n";
         //
+        // Outside Video - Advertiseemnt for Watching Content on YouTube
+        css += "#offer-module {display: none !important;}\n";
+        //
         // Outside Video - Live Chat - Pinned uploader messages
         css += "yt-live-chat-banner-renderer {display: none !important;}\n";
         //
