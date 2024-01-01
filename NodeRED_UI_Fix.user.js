@@ -72,6 +72,10 @@ var CSSMod = /** @class */ (function () {
         //
         css += "[id=red-ui-workspace-footer] {height: 25px !important;}\n"; //
         //
+        // Fix Drag & Drop for Tabs (janky)
+        css += ".red-ui-tab {position: relative !important;}\n"; //
+        css += ".red-ui-tab {left: unset !important;}\n"; //
+        //
         // Shift up to use header space
         //css += "[id=red-ui-main-container] {top: 0px !important;}\n"; //
         //css += "[id=red-ui-sidebar-separator] {top: 0px !important;}\n"; //
@@ -97,16 +101,23 @@ var CSSMod = /** @class */ (function () {
         css += ".red-ui-palette-label {margin-top:    0px !important;}\n"; //
         css += ".red-ui-palette-label {margin-bottom: 0px !important;}\n"; //
         //
-        // Palette List - More Compact
+        // Palette List ("Manage palette") - More Compact
         css += ".red-ui-editableList-item-content {padding-top:    2px !important;}\n"; //
         css += ".red-ui-editableList-item-content {padding-bottom: 2px !important;}\n"; //
         //
-        // Right Sidebar Buttons
+        // Right Sidebar Buttons - Compact, always visible
         css += ".red-ui-tab-link-button {display: inline-block !important;}\n"; //
         css += ".red-ui-tab-link-button {margin-left:  0px !important;}\n"; //
         css += ".red-ui-tab-link-button {margin-right: 0px !important;}\n"; //
         css += ".red-ui-tab-link-button {width: 20px !important;}\n"; //
         css += ".red-ui-tab-link-button-menu {display: none !important;}\n"; //
+        //
+        // Move Notification Window Out of the Way (to the top-left)
+        css += "[id=red-ui-notifications] {width:  fit-content !important;}\n"; //
+        css += "[id=red-ui-notifications] {height: fit-content !important;}\n"; //
+        css += "[id=red-ui-notifications] {margin-left: 0 !important;}\n"; //
+        css += "[id=red-ui-notifications] {left: 0 !important;}\n"; //
+        //
         return css;
     };
     return CSSMod;
