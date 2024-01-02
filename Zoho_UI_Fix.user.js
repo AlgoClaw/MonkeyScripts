@@ -5,7 +5,7 @@
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/Zoho_UI_Fix.user.js
 // @match       *://*.zoho.com/*
 // @description null
-// @version     0.001
+// @version     0.002
 //
 // ==/UserScript==
 //
