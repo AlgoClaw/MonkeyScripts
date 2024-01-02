@@ -5,7 +5,7 @@
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/Scrutiny_UI_Fix.user.js
 // @include     *://*:1880/*
 // @description null
-// @version     0.001
+// @version     0.002
 //
 // ==/UserScript==
 //
