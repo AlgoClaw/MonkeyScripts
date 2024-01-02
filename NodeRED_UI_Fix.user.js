@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Node-RED UI Fix
-// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/Scrutiny_UI_Fix.user.js
-// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/Scrutiny_UI_Fix.user.js
-// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/Scrutiny_UI_Fix.user.js
+// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/NodeRED_UI_Fix.user.js
+// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/NodeRED_UI_Fix.user.js
+// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/NodeRED_UI_Fix.user.js
 // @include     *://*:1880/*
 // @description null
 // @version     0.002
