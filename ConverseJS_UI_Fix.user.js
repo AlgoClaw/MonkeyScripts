@@ -5,7 +5,7 @@
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/ConverseJS_UI_Fix.user.js
 // @match       *://*.xyz
 // @description null
-// @version     0.001
+// @version     0.002
 //
 // ==/UserScript==
 //
