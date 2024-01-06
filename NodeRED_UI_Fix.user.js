@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name        Node-RED UI Fix
-// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/NodeRED_UI_Fix.user.js
-// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/NodeRED_UI_Fix.user.js
-// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/NodeRED_UI_Fix.user.js
+// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/Scrutiny_UI_Fix.user.js
+// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/Scrutiny_UI_Fix.user.js
+// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/Scrutiny_UI_Fix.user.js
 // @include     *://*:1880/*
 // @description null
-// @version     0.002
+// @version     0.001
 //
 // ==/UserScript==
 //
@@ -68,9 +68,19 @@ var CSSMod = /** @class */ (function () {
         css += "[id=red-ui-workspace-chart] {top: 0px !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {position: relative !important;}\n"; //
         css += "[id=red-ui-workspace-chart] {overflow: scroll !important;}\n"; //
-        css += "[id=red-ui-workspace-chart] {margin-bottom: 25px !important;}\n"; //
+        css += "[id=red-ui-workspace-chart] {margin-bottom: 0px !important;}\n"; //
+        css += "[id=red-ui-workspace-chart] {margin-top: 0px !important;}\n"; //
         //
-        css += "[id=red-ui-workspace-footer] {height: 25px !important;}\n"; //
+        css += "[id=red-ui-workspace-toolbar] {position: relative !important;}\n"; //
+        css += "[id=red-ui-workspace-toolbar] {top: 0px !important;}\n"; //
+        css += "[id=red-ui-workspace-toolbar] {overflow: unset !important;}\n"; //
+        css += "[id=red-ui-workspace-toolbar] {padding: unset !important;}\n"; //
+        //
+        css += "[id=red-ui-workspace-footer] {position: relative !important;}\n"; //
+        css += "[id=red-ui-workspace-footer] {padding: unset !important;}\n"; //
+        css += "[id=red-ui-workspace-footer] {height: 250px !important;}\n"; // Why does this need to be so large?
+        css += "[id=red-ui-workspace-footer] {box-sizing: border-box !important;}\n"; //
+        css += "[id=red-ui-workspace-footer] {display: block !important;}\n"; //
         //
         // Fix Drag & Drop for Tabs (janky)
         css += ".red-ui-tab {position: relative !important;}\n"; //
