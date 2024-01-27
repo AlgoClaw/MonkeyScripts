@@ -95,13 +95,16 @@ var CSSMod = /** @class */ (function () {
         css += "#filter.zmbtn {display: none !important;}\n"; // Remove "Filter Views"
         css += "#archiveFilter.zmbtn {display: none !important;}\n"; // Remove "View Archive"
         css += "#attachmentFilter.zmbtn {display: none !important;}\n"; // Remove "Attachment Options"
-        css += "#snooze.zmbtn {display: none !important;}\n"; // Remove "Snooze" Button
         css += "#move.zmbtn {display: none !important;}\n"; // Remove "Move To" Button
         css += "#tag.zmbtn {display: none !important;}\n"; // Remove "Tag as" Button
+        css += "#snooze.zmbtn {display: none !important;}\n"; // Remove "Snooze" Button
         css += ".zmmenu-separator {display: none !important;}\n"; // Remove Seperator
-        css += ".zmbtn__wsmdia[menu-btn-id=snooze] {display: none !important;}\n"; // Hide "Snooze" Button
-        css += ".zmbtn__wsmdia[id=tag] {display: none !important;}\n"; // Hide "Tag as" Button
-        css += ".zmbtn__wsmdia[id=move] {display: none !important;}\n"; // Hide "Move to" Button
+        css += ".zmbtn__wsmdia[id=move] {display: none !important;}\n"; // Remove "Move to" Button
+        css += ".zmbtn__wsmdia[id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
+        css += ".zmbtn__wsmdia[menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
+        css += ".zmbtn__xwshh3[id=move] {display: none !important;}\n"; // Remove "Move to" Button
+        css += ".zmbtn__xwshh3[id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
+        css += ".zmbtn__xwshh3[menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
         css += ".zmmenu-separator__6cs96d {display: none !important;}\n"; // Vertical seperator
         css += ".zmbtn__wsmdia[id=reminder] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Reminder" Button
         css += ".zmbtn__wsmdia[id=associateTask] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Add task" Button
