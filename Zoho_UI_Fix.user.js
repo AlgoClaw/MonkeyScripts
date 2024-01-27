@@ -78,7 +78,7 @@ var CSSMod = /** @class */ (function () {
         css += ".zmLDate {max-width: none !important;}\n"; // Date Column Visible
         css += ".zmLDate {text-align: left !important;}\n"; // Date Align Left
         css += "#zmStreamTree {display: none !important;}\n"; // Remove "Streams"
-        css += "#zmlviewH {display: none !important;}\n"; // Remove "Views"
+        css += "#zmlviewH {display: none !important;}\n"; // Remove "Views" (left toolbar section)
         css += "#zmllabelH {display: none !important;}\n"; // Remove "Tags"
         css += ".zmTreeNode[title=Templates] {display: none !important;}\n"; // Remove "Templates"
         css += ".zmTreeNode[title=Snoozed] {display: none !important;}\n"; // Remove "Snoozed"
@@ -92,23 +92,18 @@ var CSSMod = /** @class */ (function () {
         css += ".zmLTct  {display: none !important;}\n"; // Remove gap between checkbox and text
         //
         //Mail Top Toolbar
+        css += "[menu-btn-id=filter] {display: none !important;}\n"; // Remove "Views"
         css += "#filter.zmbtn {display: none !important;}\n"; // Remove "Filter Views"
         css += "#archiveFilter.zmbtn {display: none !important;}\n"; // Remove "View Archive"
         css += "#attachmentFilter.zmbtn {display: none !important;}\n"; // Remove "Attachment Options"
-        css += "#move.zmbtn {display: none !important;}\n"; // Remove "Move To" Button
-        css += "#tag.zmbtn {display: none !important;}\n"; // Remove "Tag as" Button
-        css += "#snooze.zmbtn {display: none !important;}\n"; // Remove "Snooze" Button
         css += ".zmmenu-separator {display: none !important;}\n"; // Remove Seperator
-        css += ".zmbtn__wsmdia[id=move] {display: none !important;}\n"; // Remove "Move to" Button
-        css += ".zmbtn__wsmdia[id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
-        css += ".zmbtn__wsmdia[menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
-        css += ".zmbtn__xwshh3[id=move] {display: none !important;}\n"; // Remove "Move to" Button
-        css += ".zmbtn__xwshh3[id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
-        css += ".zmbtn__xwshh3[menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
+        css += "[id=move] {display: none !important;}\n"; // Remove "Move to" Button
+        css += "[id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
+        css += "[menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
         css += ".zmmenu-separator__6cs96d {display: none !important;}\n"; // Vertical seperator
-        css += ".zmbtn__wsmdia[id=reminder] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Reminder" Button
-        css += ".zmbtn__wsmdia[id=associateTask] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Add task" Button
-        css += ".zmbtn__wsmdia[id=shareAsLink] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Permalink" Button
+        css += "[id=reminder] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Reminder" Button
+        css += "[id=associateTask] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Add task" Button
+        css += "[id=shareAsLink] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Permalink" Button
         //
         // Calendar
         css += "#zcl_mcalH {display: none !important;}\n"; // Remove "My Calendars" header
