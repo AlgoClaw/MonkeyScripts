@@ -128,6 +128,13 @@ var CSSMod = /** @class */ (function () {
         css += ".msi-invite-zoho  {display: none !important;}\n"; // Remove "Invite to Zoho" Button
         css += ".msi-invite-chat  {display: none !important;}\n"; // Remove "Invite to Chat" Button
         //
+        // Drating Email
+        css += ".zmCRow {padding-top: 0px !important;}\n"; // Remove padding around "To", "CC", and "BCC" bars
+        css += ".zmCRow {padding-bottom: 0px !important;}\n"; // Remove padding around "To", "CC", and "BCC" bars
+        css += ".zmattachment-section-header__1dhb1fv {padding-top: 0px !important;}\n"; // Remove padding around "Attachments" bar
+        css += ".zmattachment-section-header__1dhb1fv {padding-bottom: 0px !important;}\n"; // Remove padding around "Attachments" bar
+        css += ".zeSpellCheckBtnWra {display: none !important;}\n"; // Remove "Errors" sticky overlay
+        //
         // Remove rounded corners
         //css += " {border-radius: none !important;}\n";
         //
