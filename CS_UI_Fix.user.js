@@ -75,6 +75,7 @@ var CSSMod = /** @class */ (function () {
         //css += ".sdps-panel__body {padding-right: 0px !important;}\n"; //
         //
         css += ".group-footer {padding-top: 0px !important;}\n"; //
+        css += ".group-footer {padding-bottom: 0px !important;}\n"; //
         css += ".account-row {line-height: 0px !important;}\n"; //
         css += ".category-heading {padding-bottom: 0px !important;}\n"; //
         css += ".vertical-aligned {padding-top: 0px !important;}\n"; //
@@ -82,6 +83,11 @@ var CSSMod = /** @class */ (function () {
         css += ".vertical-center {height: 0px !important;}\n"; //
         css += "[id=panel-heading] {padding-top: 0px !important;}\n"; //
         css += "[id=panel-heading] {padding-bottom: 0px !important;}\n"; //
+        //
+        css += ".sdps-header__nav-item--secondary {margin-top: 0px !important;}\n"; //
+        css += ".sdps-header__nav-item--secondary {margin-bottom: 0px !important;}\n"; //
+        css += ".sdps-header__nav-list {padding-top: 0px !important;}\n"; //
+        //css += ".sdps-m-around_large {margin: 0px !important;}\n"; //
         //
         return css;
     };
