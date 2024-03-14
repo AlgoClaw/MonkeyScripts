@@ -95,12 +95,12 @@ var CSSMod = /** @class */ (function () {
         //
         // Mail (inbox) Top Toolbar
         css += ".zmmenu-separator {display: none !important;}\n"; // Remove Seperator
+        css += "[type=button][menu-btn-id=filter] {display: none !important;}\n"; // Remove "Views" Button
         css += "[type=button][id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
         css += "[type=button][id=move] {display: none !important;}\n"; // Remove "Move to" Button
         css += "[type=button][menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
-        //css += "[type=button][id=] {display: none !important;}\n"; // Remove "View Archive" Button
-        //css += "[type=button][id=] {display: none !important;}\n"; // Remove "Attachment Options" Button
-        //css += "[type=button][id=] {display: none !important;}\n"; // Remove "Attachment Options" Button
+        css += "[type=button][id=archiveFilter] {display: none !important;}\n"; // Remove "View archived" Button
+        css += "[type=button][menu-btn-id=attachmentFilter] {display: none !important;}\n"; // Remove "Attachment Options" Button
         //
         // Mail (individual email) Toolbar
         css += ".zmmenu-separator__6cs96d {display: none !important;}\n"; // Vertical seperator
@@ -131,6 +131,13 @@ var CSSMod = /** @class */ (function () {
         // Contacts
         css += ".msi-invite-zoho  {display: none !important;}\n"; // Remove "Invite to Zoho" Button
         css += ".msi-invite-chat  {display: none !important;}\n"; // Remove "Invite to Chat" Button
+        //
+        // Drating Email
+        css += ".zmCRow {padding-top: 0px !important;}\n"; // Remove padding around "To", "CC", and "BCC" bars
+        css += ".zmCRow {padding-bottom: 0px !important;}\n"; // Remove padding around "To", "CC", and "BCC" bars
+        css += ".zmattachment-section-header__1dhb1fv {padding-top: 0px !important;}\n"; // Remove padding around "Attachments" bar
+        css += ".zmattachment-section-header__1dhb1fv {padding-bottom: 0px !important;}\n"; // Remove padding around "Attachments" bar
+        css += ".zeSpellCheckBtnWra {display: none !important;}\n"; // Remove "Errors" sticky overlay
         //
         // Remove rounded corners
         //css += " {border-radius: none !important;}\n";
