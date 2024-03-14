@@ -5,7 +5,7 @@
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/Zoho_UI_Fix.user.js
 // @match       *://*.zoho.com/*
 // @description null
-// @version     0.002
+// @version     0.003
 //
 // ==/UserScript==
 //
@@ -57,6 +57,7 @@ var CSSMod = /** @class */ (function () {
         //css += " .zmDoubleIcon {display: none !important;}\n"; // Left Toolbar Icons
         css += "[title=Resources] {display: none !important;}\n"; // Left Toolbar - Remove "Resources"
         css += "[title=Bookmarks] {display: none !important;}\n"; // Left Toolbar - Remove "Bookmarks"
+        css += "[title=Notes] {display: none !important;}\n"; // Left Toolbar - Remove "Notes"
         css += ".zmRhsBar {width: 100% !important;}\n"; // Right Toolbar - Reduce Width
         css += ".zmTopBar  {height: unset !important;}\n"; // Top Toolbar - Reduce some vertical padding
         css += ".zwp-tab-block {width: unset !important;}\n"; // Top Toolbar - Reduce Width to Minimum
@@ -78,7 +79,7 @@ var CSSMod = /** @class */ (function () {
         css += ".zmLDate {max-width: none !important;}\n"; // Date Column Visible
         css += ".zmLDate {text-align: left !important;}\n"; // Date Align Left
         css += "#zmStreamTree {display: none !important;}\n"; // Remove "Streams"
-        css += "#zmlviewH {display: none !important;}\n"; // Remove "Views" (left toolbar section)
+        css += "#zmlviewH {display: none !important;}\n"; // Remove "Views"
         css += "#zmllabelH {display: none !important;}\n"; // Remove "Tags"
         css += ".zmTreeNode[title=Templates] {display: none !important;}\n"; // Remove "Templates"
         css += ".zmTreeNode[title=Snoozed] {display: none !important;}\n"; // Remove "Snoozed"
@@ -90,20 +91,23 @@ var CSSMod = /** @class */ (function () {
         css += ".msi-mailopen  {display: none !important;}\n"; // Remove Tab Icons
         css += ".jsTabDragDrop  {min-width: 150px !important;}\n"; // Set Minimum Tab Width
         css += ".zmLTct  {display: none !important;}\n"; // Remove gap between checkbox and text
+        css += ".zmPVHeading {padding-bottom: 0px !important;}\n"; // Decrease padding around subject line
         //
-        //Mail Top Toolbar
-        css += "[menu-btn-id=filter] {display: none !important;}\n"; // Remove "Views"
-        css += "#filter.zmbtn {display: none !important;}\n"; // Remove "Filter Views"
-        css += "#archiveFilter.zmbtn {display: none !important;}\n"; // Remove "View Archive"
-        css += "#attachmentFilter.zmbtn {display: none !important;}\n"; // Remove "Attachment Options"
+        // Mail (inbox) Top Toolbar
         css += ".zmmenu-separator {display: none !important;}\n"; // Remove Seperator
-        css += "[id=move] {display: none !important;}\n"; // Remove "Move to" Button
-        css += "[id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
-        css += "[menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
+        css += "[type=button][id=tag] {display: none !important;}\n"; // Remove "Tag as" Button
+        css += "[type=button][id=move] {display: none !important;}\n"; // Remove "Move to" Button
+        css += "[type=button][menu-btn-id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
+        //css += "[type=button][id=] {display: none !important;}\n"; // Remove "View Archive" Button
+        //css += "[type=button][id=] {display: none !important;}\n"; // Remove "Attachment Options" Button
+        //css += "[type=button][id=] {display: none !important;}\n"; // Remove "Attachment Options" Button
+        //
+        // Mail (individual email) Toolbar
         css += ".zmmenu-separator__6cs96d {display: none !important;}\n"; // Vertical seperator
-        css += "[id=reminder] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Reminder" Button
-        css += "[id=associateTask] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Add task" Button
-        css += "[id=shareAsLink] {display: none !important;}\n"; // Open Mail Toolbar - Hide "Permalink" Button
+        css += "[type=button][id=reminder] {display: none !important;}\n"; // Remove "Reminder" Button
+        css += "[type=button][id=associateTask] {display: none !important;}\n"; // Remove "Add task" Button
+        css += "[type=button][id=shareAsLink] {display: none !important;}\n"; // Remove "Permalink" Button
+        css += "[type=button][id=snooze] {display: none !important;}\n"; // Remove "Snooze" Button
         //
         // Calendar
         css += "#zcl_mcalH {display: none !important;}\n"; // Remove "My Calendars" header
@@ -127,13 +131,6 @@ var CSSMod = /** @class */ (function () {
         // Contacts
         css += ".msi-invite-zoho  {display: none !important;}\n"; // Remove "Invite to Zoho" Button
         css += ".msi-invite-chat  {display: none !important;}\n"; // Remove "Invite to Chat" Button
-        //
-        // Drating Email
-        css += ".zmCRow {padding-top: 0px !important;}\n"; // Remove padding around "To", "CC", and "BCC" bars
-        css += ".zmCRow {padding-bottom: 0px !important;}\n"; // Remove padding around "To", "CC", and "BCC" bars
-        css += ".zmattachment-section-header__1dhb1fv {padding-top: 0px !important;}\n"; // Remove padding around "Attachments" bar
-        css += ".zmattachment-section-header__1dhb1fv {padding-bottom: 0px !important;}\n"; // Remove padding around "Attachments" bar
-        css += ".zeSpellCheckBtnWra {display: none !important;}\n"; // Remove "Errors" sticky overlay
         //
         // Remove rounded corners
         //css += " {border-radius: none !important;}\n";
