@@ -164,8 +164,7 @@ var CSSMod = /** @class */ (function () {
         css += ".zmsettings-nav-action-primary {padding-right: 0px !important;}\n";
         css += ".zmsettings-nav-list-item {margin-left: 0px !important;}\n";
         css += ".zmsettings-nav-list-item {margin-right: 0px !important;}\n";
-        css += ".zmsettings-nav-list-item {max-height: 20px !important;}\n";
-        css += ".zmsettings-nav-list-item {min-height: 15px !important;}\n";
+        css += ".zmsettings-nav-list-item {min-height: unset !important;}\n";
         css += "[class*='zmset-filter-table-row-'] {padding-top: 0px !important;}\n";
         css += "[class*='zmset-filter-table-row-'] {padding-bottom: 0px !important;}\n";
         css += "[class*='zmset-filter-table-row-'] {padding-left: 0px !important;}\n";
