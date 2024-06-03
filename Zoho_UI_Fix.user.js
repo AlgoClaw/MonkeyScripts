@@ -176,6 +176,15 @@ var CSSMod = /** @class */ (function () {
         css += ".zmsettings-primary-nav h6 {padding-right: 0px !important;}\n";
         css += ".zmsettings-block {flex: unset !important;}\n";
         //
+        css += "[class=zmTreeBlk] {padding-top: 0px !important;}\n";
+        css += "[class=zmTreeWrapper] {padding-right: 0px !important;}\n";
+        css += "[class*=zmList] {padding-top: 2px !important;}\n";
+        css += "[class*=zmList] {padding-bottom: 2px !important;}\n";
+        css += "[class*=zmList] {padding-left: 2px !important;}\n";
+        css += "[class*=zmList] {padding-right: 2px !important;}\n";
+        css += "[class=zmLSender] {padding-right: 5px !important;}\n";
+        //
+        //
         // Remove rounded corners
         //css += " {border-radius: none !important;}\n";
         //
