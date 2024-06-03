@@ -139,6 +139,44 @@ var CSSMod = /** @class */ (function () {
         css += ".zmattachment-section-header__1dhb1fv {padding-bottom: 0px !important;}\n"; // Remove padding around "Attachments" bar
         css += ".zeSpellCheckBtnWra {display: none !important;}\n"; // Remove "Errors" sticky overlay
         //
+        // Settings Menus and Headers
+        css += ".zmsettings-page-header {padding-top: 0px !important;}\n";
+        css += ".zmsettings-page-header {padding-bottom: 0px !important;}\n";
+        css += ".zmsettings-page-header {padding-left: 0px !important;}\n";
+        css += ".zmsettings-page-header {padding-right: 0px !important;}\n";
+        css += ".zmsettings-page-header-data {padding-top: 0px !important;}\n";
+        css += ".zmsettings-table-select {padding-top: 0px !important;}\n";
+        css += ".zmsettings-table-select {padding-bottom: 0px !important;}\n";
+        css += ".zmsettings-table-select {padding-left: 0px !important;}\n";
+        css += ".zmsettings-table-select {padding-right: 0px !important;}\n";
+        css += ".zmsettings-app-switch {padding-top: 0px !important;}\n";
+        css += ".zmsettings-app-switch {padding-bottom: 0px !important;}\n";
+        css += ".zmsettings-app-switch {padding-left: 0px !important;}\n";
+        css += ".zmsettings-app-switch {padding-right: 0px !important;}\n";
+        css += ".zmsettings-block {padding-top: 0px !important;}\n";
+        css += ".zmsettings-page-content {padding-left: 0px !important;}\n";
+        css += ".zmsettings-page-content {padding-right: 0px !important;}\n";
+        css += ".zmsettings-tab-panel {padding-top: 0px !important;}\n";
+        css += ".zmsettings-table-actions {margin-bottom: 0px !important;}\n";
+        css += ".zmsettings-nav-action-primary {padding-top: 0px !important;}\n";
+        css += ".zmsettings-nav-action-primary {padding-bottom: 0px !important;}\n";
+        css += ".zmsettings-nav-action-primary {padding-left: 0px !important;}\n";
+        css += ".zmsettings-nav-action-primary {padding-right: 0px !important;}\n";
+        css += ".zmsettings-nav-list-item {margin-left: 0px !important;}\n";
+        css += ".zmsettings-nav-list-item {margin-right: 0px !important;}\n";
+        css += ".zmsettings-nav-list-item {max-height: 20px !important;}\n";
+        css += ".zmsettings-nav-list-item {min-height: 15px !important;}\n";
+        css += "[class*='zmset-filter-table-row-'] {padding-top: 0px !important;}\n";
+        css += "[class*='zmset-filter-table-row-'] {padding-bottom: 0px !important;}\n";
+        css += "[class*='zmset-filter-table-row-'] {padding-left: 0px !important;}\n";
+        css += "[class*='zmset-filter-table-row-'] {padding-right: 0px !important;}\n";
+        css += "[class='zmsettings-search'] {display: none !important;}\n";
+        css += ".zmsettings-primary-nav h6 {padding-top: 0px !important;}\n";
+        css += ".zmsettings-primary-nav h6 {padding-bottom: 0px !important;}\n";
+        css += ".zmsettings-primary-nav h6 {padding-left: 0px !important;}\n";
+        css += ".zmsettings-primary-nav h6 {padding-right: 0px !important;}\n";
+        css += ".zmsettings-block {flex: unset !important;}\n";
+        //
         // Remove rounded corners
         //css += " {border-radius: none !important;}\n";
         //
