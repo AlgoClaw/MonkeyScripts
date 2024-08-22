@@ -5,7 +5,7 @@
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/AllowHighlighting.user.js
 // @include     *
 // @description null
-// @version     0.001
+// @version     0.002
 //
 // ==/UserScript==
 //
@@ -36,12 +36,12 @@ var CSSMod = /** @class */ (function () {
     //
     CSSMod.prototype.applyCSSFix = function (css) {
         //
-        css += "* {-webkit-user-select: unset !important;}\n"; //
-        css += "* {-khtml-user-select: unset !important;}\n"; //
-        css += "* {-moz-user-select: unset !important;}\n"; //
-        css += "* {-ms-user-select: unset !important;}\n"; //
-        css += "* {-o-user-select: unset !important;}\n"; //
-        css += "* {user-select: unset !important;}\n"; //
+        css += "* {-webkit-user-select: text !important;}\n"; //
+        css += "* {-khtml-user-select: text !important;}\n"; //
+        css += "* {-moz-user-select: text !important;}\n"; //
+        css += "* {-ms-user-select: text !important;}\n"; //
+        css += "* {-o-user-select: text !important;}\n"; //
+        css += "* {user-select: text !important;}\n"; //
         //
         return css;
     };
