@@ -1,5 +1,5 @@
     // ==UserScript==
-    // @name         Refresh page every X minutes
+    // @name         Refresh_page_every_X_minutes
     // @version      0.0
     // @description  null
     // @match        https://patentcenter.uspto.gov/*
