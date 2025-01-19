@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        Allow Highlighting
-// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/AllowHighlighting.user.js
-// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/AllowHighlighting.user.js
-// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/AllowHighlighting.user.js
+// @name        Remove ReadOnly Fields
+// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/RemoveReadOnly.user.js
+// @downloadURL https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
+// @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
 // @include     *
 // @description null
-// @version     0.002
+// @version     0.001
 //
 // ==/UserScript==
 //
