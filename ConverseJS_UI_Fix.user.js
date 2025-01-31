@@ -51,7 +51,7 @@ var CSSMod = /** @class */ (function () {
         css += "#chatrooms {display: none !important}\n"; //
         css += ".show-msg-author-modal .align-self-center.avatar {display: none !important}\n"; //
         //
-        // "Overlay" View (to be more like "fullscreen"
+        // "Overlay" View (to be more like "fullscreen")
         var ControlWidth =275;
         css += "converse-chats[class='converse-chatboxes row no-gutters converse-overlayed'] {right: unset !important}\n"; //
         css += "converse-chats[class='converse-chatboxes row no-gutters converse-overlayed'] {flex-direction: unset !important}\n"; //
