@@ -1,6 +1,6 @@
 // ==UserScript==
 // @name        ConverseJS UI Fix
-// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/ConverseJS_UI_Fix.user.js
+// @homepageURL https://github.com/AlgoClaw/MonkeyScripts/blob/main/ConverseJS_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/ConverseJS_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/ConverseJS_UI_Fix.user.js
 // @match       *://*.xyz
