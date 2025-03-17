@@ -4,7 +4,7 @@
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/AmazonLinkRewrite.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/AmazonLinkRewrite.user.js
 // @description null
-// @version     0.001
+// @version     0.002
 // @grant       none
 // @include     *
 // ==/UserScript==
@@ -25,8 +25,10 @@ function RewriteLinks() {
     links = document.evaluate("//a[@href]",document,null,XPathResult.UNORDERED_NODE_SNAPSHOT_TYPE,null);
     for (var i=0;i<links.snapshotLength;i++) {
         var thisLink = links.snapshotItem(i);
-        thisLink.href = thisLink.href.replace(RegExp(FIND001),REPLACE);
-        thisLink.href = thisLink.href.replace(RegExp(FIND002),REPLACE);
+        if (thisLink !== undefined) {
+            thisLink.href = thisLink.href.replace(RegExp(FIND001),REPLACE);
+            thisLink.href = thisLink.href.replace(RegExp(FIND002),REPLACE);
+        }
     }
 }
 
@@ -36,8 +38,10 @@ document.addEventListener("click", (e) => change_link(e), false) // left click
 document.addEventListener("auxclick", (e) => change_link(e), false) //  right/middle click
 function change_link(event) {
     const link = event.currentTarget.activeElement;
-    //console.log(link.href); // link before change
-    link.href = link.href.replace(RegExp(FIND001),REPLACE);
-    link.href = link.href.replace(RegExp(FIND002),REPLACE);
-    //console.log(link.href); // link after change
+    if (link.href !== undefined) {
+        //console.log(link.href); // link before change
+        link.href = link.href.replace(RegExp(FIND001),REPLACE);
+        link.href = link.href.replace(RegExp(FIND002),REPLACE);
+        //console.log(link.href); // link after change
+    }
 }
