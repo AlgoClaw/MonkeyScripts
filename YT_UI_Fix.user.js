@@ -4,8 +4,9 @@
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/YT_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/YT_UI_Fix.user.js
 // @match       *://*.youtube.com/*
-// @description null
-// @version     0.002
+// @grant       unsafeWindow
+// @description Keeps the video progress bar visible and ensures it updates in real-time.
+// @version     0.006
 //
 // ==/UserScript==
 //
@@ -31,10 +32,10 @@
 // Turn Off Autoplay
 var var_interval_id = window.setInterval( function( window ) {
     let a = window.document.querySelector( "button.ytp-button[data-tooltip-target-id='ytp-autonav-toggle-button']" ); // get the button
-    if ( a.getAttribute( "aria-label" ) == "Autoplay is on" ) {
+    if ( a && a.getAttribute( "aria-label" ) == "Autoplay is on" ) {
         a.click( ); // disable autoplay next if enabled
     }
-    if ( a.getAttribute( "aria-label" ) == "Autoplay is off" ) {
+    if ( a && a.getAttribute( "aria-label" ) == "Autoplay is off" ) {
         window.clearInterval( var_interval_id ); // end script once done
     }
 }, 1024, window );
@@ -44,10 +45,10 @@ var var_hamburger = window.setInterval( function( window ) {
     let OpenOrClose = window.document.querySelector( "button[aria-label='Guide']" );
     let Button2Click = window.document.querySelector( "#guide-button.ytd-masthead" );
 
-    if ( OpenOrClose.getAttribute( "aria-pressed" ) == "true" ) {
+    if ( OpenOrClose && OpenOrClose.getAttribute( "aria-pressed" ) == "true" ) {
         Button2Click.click( );
     }
-    if ( OpenOrClose.getAttribute( "aria-pressed" ) == "false" ) {
+    if ( OpenOrClose && OpenOrClose.getAttribute( "aria-pressed" ) == "false" ) {
         window.clearInterval( var_hamburger ); // end script once done
     }
 }, 1024, window );
@@ -57,18 +58,57 @@ var YtNewUIFix = /** @class */ (function () {
     function YtNewUIFix() {
         var _this = this;
         this.isEmbedded = window.top !== window.self;
-        this.mouseMoveEvent = document.createEvent("Events");
-        this.mouseMoveEvent.initEvent("mousemove", false, false);
         document.body.classList.add("yt-ui-fix");
     };
     //
     YtNewUIFix.prototype.applyFix = function () {
-        //if (document.body.innerHTML.length === 0) {return;} // empty page can be ignored (in share tab before it's active)
+        // This adds the custom CSS to move the controls.
         this.addCSS();
-        var _this = this;
-        window.setInterval(function () {document.querySelector(".html5-video-player").dispatchEvent(_this.mouseMoveEvent)}, 1000);
-        window.setInterval(function () {document.querySelector(".ytp-chrome-bottom").dispatchEvent(_this.mouseMoveEvent)}, 1000);
-        window.setInterval(function () {document.querySelector(".ytp-progress-bar-container").dispatchEvent(_this.mouseMoveEvent)}, 1000);
+
+        // **MODIFICATION START**
+        // The previous methods were not sufficient. This version makes the mouse
+        // movement simulation more realistic by changing the coordinates with each event.
+
+        // We'll keep track of a fake mouse position to make each event unique.
+        let fakeMousePos = { x: 1, y: 1 };
+
+        window.setInterval(function () {
+            const player = document.querySelector('.html5-video-player');
+            if (!player) return; // Exit if the player isn't on the page
+
+            // 1. Force the player to be in an "active" state by managing CSS classes.
+            // This can help keep the controls visible.
+            player.classList.remove('ytp-user-inactive');
+            player.classList.add('ytp-user-active');
+
+            // 2. Create and dispatch a new mousemove event with updated coordinates.
+            // By changing the clientX/Y coordinates, we create a more realistic
+            // simulation that is less likely to be ignored by YouTube's scripts.
+            // **FIX**: The 'view' property requires the page's actual window object.
+            // In a userscript environment, this is accessed via `unsafeWindow`.
+            const mouseMoveEvent = new MouseEvent('mousemove', {
+                bubbles: true,
+                cancelable: true,
+                view: unsafeWindow,
+                clientX: fakeMousePos.x,
+                clientY: fakeMousePos.y
+            });
+
+            // We only need to dispatch it on the main player element.
+            player.dispatchEvent(mouseMoveEvent);
+
+            // 3. Update the fake mouse position for the next interval.
+            // A simple 1-pixel shift is enough to register as a new movement.
+            fakeMousePos.x += 1;
+            fakeMousePos.y += 1;
+
+            // Reset the position if it gets too large to avoid any potential issues.
+            if (fakeMousePos.x > 100) {
+                fakeMousePos.x = 1;
+                fakeMousePos.y = 1;
+            }
+        }, 1000); // The interval is set to 1000ms (1 second).
+        // **MODIFICATION END**
     };
     //
     YtNewUIFix.prototype.addCSS = function () {
@@ -104,7 +144,6 @@ var YtNewUIFix = /** @class */ (function () {
         //
         // Increase height of video container by height of progress and control bar (or 100% of vertical viewing area, if smaller)
         css += "#movie_player {min-height: min(calc(100% + " + ConProgH + "px),min(100vh,100vh)) !important;}\n";
-        //css += "#movie_player {max-height: min(calc(100% + " + ConProgH + "px),min(100vh,70vw)) !important;}\n";
         //
         // Decrease height of video by height of progress and control bar
         css += ".html5-main-video {min-height: calc(100% - " + ConProgH + "px) !important;}\n";
@@ -116,8 +155,6 @@ var YtNewUIFix = /** @class */ (function () {
         css += "ytd-watch-flexy:not([theater]) #player                   {margin-bottom: " + (ConProgH - VidTitleUp) + "px !important;}\n"; // Regular mode
         css += "ytd-watch-flexy[theater]       #player-theater-container {margin-bottom: " + (ConProgH - VidTitleUp) + "px !important;}\n"; // Theater mode
         //
-        // Add bottom margin to video container (July 2023 Patch)
-        //css += "ytd-watch-flexy[theater]       #player-wide-container    {margin-bottom: " + (ConProgH) + "px !important;}\n";
         // Add bottom margin to video container (August 2023 Patch)
         css += "#player-full-bleed-container {margin-bottom: " + (ConProgH) + "px !important;}\n";
         css += "#full-bleed-container {height: calc(56.25vw + " + ConProgH + "px) !important;}\n";
@@ -131,10 +168,7 @@ var YtNewUIFix = /** @class */ (function () {
         css += ".video-stream.html5-main-video {left: 0px !important;}\n";
         //
         // Set padding between bottom of controls and video title
-        //css += "#columns.ytd-watch-flexy {padding-top: 10px !important;}\n";
         css += "h1.ytd-watch-metadata {padding-top: 5px !important;}\n";
-        //css += "h1.ytd-watch-metadata {font-size: medium !important;}\n";
-        //css += ".ytd-watch-metadata[id=description-and-actions] {font-size: small !important;}\n";
         //
         ///////////////////////////////////////////////////////
         ////////////// PROGRESS AND CONTROL BARS //////////////
@@ -158,7 +192,7 @@ var YtNewUIFix = /** @class */ (function () {
         // Progress bar
         css += ".ytp-progress-bar-container {min-height:" + ProgBarH + "px !important;}\n";
         css += ".ytp-progress-bar-container {max-height:" + ProgBarH + "px !important;}\n";
-        css += ".ytp-progress-bar-container {        top: 00px !important;         bottom: 00px !important;}\n"; // Fixes issues, in regular mode, when window width is squeezed tight and the progress bar moves down partially over controls
+        css += ".ytp-progress-bar-container {        top: 00px !important;         bottom: 00px !important;}\n";
         css += ".ytp-progress-bar-container { margin-top: 00px !important;  margin-bottom: 00px !important;}\n";
         css += ".ytp-progress-bar-container { border-top: 00px !important;  border-bottom: 00px !important;}\n";
         css += ".ytp-progress-bar-container {padding-top: 00px !important; padding-bottom: 00px !important;}\n";
@@ -179,7 +213,7 @@ var YtNewUIFix = /** @class */ (function () {
         ///////////////////////////
         //
         css += "ytd-watch-flexy[theater] {width: 100vw !important;}\n"; // Theater mode
-        css += ".ytp-progress-bar-container {width: calc(100% + 1px) !important;}\n"; // Sometimes, if the window is too narrow, the last chapter can cover the play button
+        css += ".ytp-progress-bar-container {width: calc(100% + 1px) !important;}\n";
         //
         // Progress and Control Container
         css += "                                         .ytp-chrome-bottom {        left: 00px !important;                       right: 00px !important;}\n";
@@ -217,9 +251,6 @@ var YtNewUIFix = /** @class */ (function () {
         css += ".ytp-volume-panel, .ytp-volume-control-hover {min-width: 52px; margin-right: 15px !important;}"; // Make volume slider always be visible
         css += ".ytp-mute-button {padding-top: 00px !important; padding-bottom: 00px !important;}"; // Fix Volume/speaker logo moving down when control height is made small
         //
-        //
-        //css += ".ytd-watch-metadata[id=owner] {min-width: 300px !important;}";
-        //css += "#owner.ytd-watch-metadata     {min-width: 300px !important;}";
         css += "#owner.ytd-watch-metadata     {min-width: unset !important;}";
         css += ".ytp-volume-slider {min-height: 00px !important; height: 100% !important;}"; // Adjust volume slider to vertical middle of control bar
         css += ".ytp-chrome-controls {line-height: " + ControlHeight + "px !important;}"; // Adjust buttons to vertical middle of control bar
@@ -234,24 +265,9 @@ var YtNewUIFix = /** @class */ (function () {
         css += ".ytp-scrubber-button {width:" + ProgScrubW + "px !important;}\n";
         css += ".ytp-scrubber-button {margin-left:" + (ProgScrubW/2) + "px !important;}\n";
         css += ".ytp-scrubber-button {border-radius: 0px !important;}\n"; // Progress bar selector - Make Square
-        //css += ".ytp-tooltip.ytp-bottom.ytp-preview {top: 500px !important;}\n"; // Move selection preview closer to progress bar
         //
         // Control Bar
         css += ".ytp-chrome-controls .ytp-play-button {max-width: 45px !important;}\n"; // Set Play Button Maximum Width (max)
-        //
-        // Volume Width Increase (not working right now)
-        //var VolWidthInc = 50;
-        //css += ".ytp-volume-area {width: " + (115 + VolWidthInc) + "px !important;}\n"; // 115
-        //css += ".ytp-volume-panel {width: " + (52 + VolWidthInc) + "px !important;}\n"; // 52
-        //css += ".ytp-volume-slider {width: " + (52 + VolWidthInc) + "px) !important;}\n"; // 52
-        //css += ".ytp-volume-slider-handle::before {width: " + (64 + VolWidthInc) + "px) !important;}\n"; // 64
-        //css += ".ytp-volume-slider-handle::after {width: " + (64 + VolWidthInc) + "px) !important;}\n"; // 64
-        //
-        // Preview mode, move progess bar (hover over videos on homepage)
-        //css += "#inline-preview-player:not(.ytp-large-width-mode) .ytp-progress-bar-container {position: relative !important; transform: translateY(-" + ConProgH + "px) !important;}\n";
-        //
-        // Preview mode, move progess bar (pop up player on homepage)
-        //css += ".ytp-player-minimized .ytp-progress-bar-container {position: relative !important; transform: translateY(-" + ConProgH + "px) !important;}\n";
         //
         // Prevent Home Screen Popup Previews on Hover (still provides GIF preview)
         css += "ytd-video-preview {pointer-events: none !important;}\n";
@@ -326,9 +342,6 @@ var YtNewUIFix = /** @class */ (function () {
         // OVER VIDEO - After Video - "Thanks for Tuning in" overlay card for live videos
         css += ".ytp-offline-slate-bar {display: none !important;}\n";
         //
-        // Control Bar - Play/pause button
-        //css += ".ytp-play-button {display: none !important;}\n";
-        //
         // Control Bar - Next video button
         css += ".ytp-next-button {display: none !important;}\n";
         //
@@ -338,17 +351,8 @@ var YtNewUIFix = /** @class */ (function () {
         // Control Bar - Subtitles button
         css += ".ytp-subtitles-button {display: none !important;}\n";
         //
-        // Control Bar - Watch later button
-        //css += ".ytp-watch-later-button {display: none !important;}\n";
-        //
         // Control Bar - Miniplayer button
         css += ".ytp-miniplayer-button {display: none !important;}\n";
-        //
-        // Control Bar - Theater/default video toggle button
-        //css += ".ytp-size-button {display: none !important;}\n";
-        //
-        // Control Bar - Fullscreen button
-        //css += ".ytp-fullscreen-button {display: none !important;}\n";
         //
         // Outside Video - Other - "Context" box below videos (covid, election, etc.)
         css += "#clarify-box {display: none !important;}\n";
@@ -377,9 +381,6 @@ var YtNewUIFix = /** @class */ (function () {
         //
         // Outside Video - Other - Download Button
         css += "[aria-label=Download] {display: none !important;}\n";
-        //
-        // Outside Video - Other - YouTube Premium Popup
-        //css += ".ytd-popup-container {display: none !important;}\n";
         //
         // Outside Video - Other - Merchandise Shelf
         css += "ytd-merch-shelf-renderer {display: none !important;}\n";
@@ -424,23 +425,8 @@ var YtNewUIFix = /** @class */ (function () {
         css += "[id=upload-info] {margin-right: 0px !important;}\n";
         css += "yt-button-view-model {margin-left: 0px !important;}\n";
         //
-        // Homepage -
-        //css += ".ytd-rich-grid-renderer.style-scope #header {display: none !important;}\n";
-        //
         // Homepage - "Recommended movies" shelf
         css += "ytd-rich-section-renderer {display: none !important;}\n";
-        //
-        // Channel - Top banner
-        //css += "div.ytd-c4-tabbed-header-renderer.style-scope.banner-visible-area {display: none !important;}\n";
-        //css += ".tp-yt-app-header-layout.style-scope {max-height: 150px !important;}\n";
-        //
-        // Channel - Recommended video
-        //css += ".ytd-item-section-renderer.style-scope  .ytd-channel-video-player-renderer.style-scope {display: none !important;}\n";
-        //
-        // Left Side Menu Grab - There is side menu on YT (same menu when hamburger button is pressed at top-left), this menu can be grabbed and pulled out, but only in the progress bar area (which causes obvious issues).
-        //css += "#guide-button {display: none !important;}\n";
-        //css += "#contentContainer {display: none !important;}\n";
-        //css += "#Guide {display: none !important;}\n";
         //
         // Outside Video - Other - Ads in Video Description
         css += ".ytd-metadata-row-container-renderer.style-scope {display: none !important;}\n";
@@ -454,10 +440,6 @@ var YtNewUIFix = /** @class */ (function () {
         //
         // ???
         css += ".ytd-video-primary-info-renderer.style-scope.yt-simple-endpoint {display: none !important;}\n";
-        //
-        // Animations?
-        //css += ".ytp-bezel {display: none !important;}\n";
-        //css += ".html5-endscreen *, .html5-video-player div {transition-property: none !important; animation: none !important;}\n";
         //
         // Irrelevant search results
         css += "ytd-shelf-renderer {display: none !important;}\n";
