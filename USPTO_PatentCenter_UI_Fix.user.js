@@ -3,13 +3,13 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     5.5
-// @description null
+// @version     6.2
+// @description Customizes the USPTO Patent Center sidebar for direct 'Documents' and 'Transactions' access, and enhances the documents table.
 // @match       *://patentcenter.uspto.gov/applications/*
 // @grant       GM_addStyle
 // @run-at      document-idle
 // ==/UserScript==
-//
+
 (function() {
     'use strict';
 
@@ -63,6 +63,11 @@
                 font-family: inherit !important;
                 font-size: inherit !important;
             }
+
+            /* Hide the sub-tabs for Documents and Transactions in the main content area */
+            .ifw-documents-and-transactions .nav-tabs {
+                display: none !important;
+            }
         `;
         if (typeof GM_addStyle !== 'undefined') {
             GM_addStyle(styles);
@@ -76,11 +81,90 @@
     }
 
     /**
+     * Adds a "Transactions" link to the side navigation menu by cloning the original "Documents" link.
+     * This preserves the SPA routing behavior and prevents full page reloads.
+     * This function is idempotent to prevent infinite loops with MutationObserver.
+     */
+    function addSideNavLinks() {
+        // Find the UNPROCESSED "Documents & Transactions" list item to use as an anchor.
+        const originalLi = document.querySelector('li[data-name="documents-transactions"]');
+        if (!originalLi) {
+            return; // Can't find the anchor point, or it has already been processed.
+        }
+
+        const originalAnchor = originalLi.querySelector('a');
+        if (!originalAnchor) {
+            return; // Can't find the anchor link.
+        }
+
+        // --- CLONE THE ORIGINAL LINK TO PRESERVE SPA ROUTING ATTRIBUTES ---
+        const transactionsLi = originalLi.cloneNode(true);
+        const transactionsAnchor = transactionsLi.querySelector('a');
+
+        // --- CONFIGURE THE NEW TRANSACTIONS LINK ---
+        transactionsLi.setAttribute('data-name', 'transactions-link');
+        transactionsAnchor.textContent = 'Transactions';
+        transactionsAnchor.href = originalAnchor.href.replace('/ifw/docs', '/ifw/transactions');
+        // Update the routerlink attribute which is used by Angular for routing
+        transactionsAnchor.setAttribute('routerlink', 'ifw/transactions');
+
+        // --- RECONFIGURE THE ORIGINAL LINK TO BE "DOCUMENTS" ---
+        originalAnchor.textContent = 'Documents';
+        // Modify the original item's data-name so it's not found again. This is critical.
+        originalLi.setAttribute('data-name', 'documents-link-processed');
+
+        // --- INSERT THE NEW LINK INTO THE DOM ---
+        originalLi.after(transactionsLi);
+    }
+
+
+    /**
+     * Updates the 'active' state for the Documents and Transactions links based on the current URL.
+     */
+    function updateSideNavActiveState() {
+        const docsLi = document.querySelector('li[data-name="documents-link-processed"]');
+        const transLi = document.querySelector('li[data-name="transactions-link"]');
+
+        // Exit if the links haven't been created yet.
+        if (!docsLi || !transLi) {
+            return;
+        }
+
+        const docsA = docsLi.querySelector('a');
+        const transA = transLi.querySelector('a');
+
+        if (!docsA || !transA) {
+            return;
+        }
+
+        const currentUrl = window.location.href;
+
+        // Check if the URL is for the transactions page
+        if (currentUrl.includes('/ifw/transactions')) {
+            // Set Transactions link to active
+            transLi.classList.add('active');
+            transA.classList.add('active_nav');
+            // Set Documents link to inactive
+            docsLi.classList.remove('active');
+            docsA.classList.remove('active_nav');
+        }
+        // Check if the URL is for the documents page
+        else if (currentUrl.includes('/ifw/docs')) {
+            // Set Documents link to active
+            docsLi.classList.add('active');
+            docsA.classList.add('active_nav');
+            // Set Transactions link to inactive
+            transLi.classList.remove('active');
+            transA.classList.remove('active_nav');
+        }
+    }
+
+
+    /**
      * Main function to process the documents table.
      * @param {HTMLTableElement} documentsTable The table element to process.
      */
     function processTable(documentsTable) {
-
         const headerRow = documentsTable.querySelector('thead > tr');
         if (!headerRow) return;
 
@@ -121,9 +205,9 @@
                     const span = cell.querySelector('span');
                     if (span) {
                         Array.from(span.childNodes).forEach(node => {
-                           if(node.nodeType === Node.TEXT_NODE && node.textContent.includes('/')) {
-                               node.remove();
-                           }
+                            if (node.nodeType === Node.TEXT_NODE && node.textContent.includes('/')) {
+                                node.remove();
+                            }
                         });
                         const button = span.querySelector('button');
                         if (button) button.classList.add('download-link-button');
@@ -158,11 +242,16 @@
     }
 
     /**
-     * Checks if the page is the documents tab and if the table needs processing.
+     * Checks the page and runs the necessary enhancements.
      * This function is designed to be called repeatedly without causing issues.
      */
     function runEnhancer() {
-        // Only run on the "docs" tab. The regex checks for the 8-digit application number format.
+        // Modify the side navigation links. This function is now idempotent.
+        addSideNavLinks();
+        // Update the active state of the nav links based on the URL.
+        updateSideNavActiveState();
+
+        // Only run the table enhancements on the "docs" tab
         if (!/applications\/\d{8}\/ifw\/docs/.test(window.location.href)) {
             return;
         }
@@ -177,31 +266,26 @@
             return;
         }
 
-        // Check if the first header cell has already been renamed to "Mail Date".
+        // This check prevents reprocessing the same table
         if (headerRow.cells[0].textContent === 'Mail Date') {
             return;
         }
 
-        console.log('New or updated documents table found. Running enhancer...');
         processTable(documentsTable);
     }
 
     // --- Main Execution ---
-    // Apply styles once on script load.
     applyGlobalStyles();
 
-    // Set up an observer to watch for dynamic page changes. This is the primary trigger.
     const observer = new MutationObserver(() => {
         runEnhancer();
     });
 
-    // Start observing the entire document body for changes to its children.
     observer.observe(document.body, {
         childList: true,
         subtree: true
     });
 
-    // Also run the enhancer on initial load, just in case.
     runEnhancer();
 
 })();
