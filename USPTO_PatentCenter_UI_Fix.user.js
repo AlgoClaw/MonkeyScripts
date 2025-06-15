@@ -3,7 +3,7 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     6.2
+// @version     2025.06.15.01
 // @description Customizes the USPTO Patent Center sidebar for direct 'Documents' and 'Transactions' access, and enhances the documents table.
 // @match       *://patentcenter.uspto.gov/applications/*
 // @grant       GM_addStyle
