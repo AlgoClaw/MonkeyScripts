@@ -5,16 +5,17 @@
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
 // @include     *
 // @description null
-// @version     1.001
+// @version     2025.06.15.05
 //
 // ==/UserScript==
 //
+
 (function() {
     'use strict';
 
     /**
      * Injects a global stylesheet to override CSS that disables user interaction.
-     * This is the most effective way to enable text selection and pointer events everywhere.
+     * This is focused on enabling text selection.
      */
     function injectGlobalStyles() {
         const styleId = 'enable-all-the-things-style';
@@ -23,12 +24,12 @@
         }
 
         const css = `
+            /* This rule enables text selection everywhere. It is generally safe. */
             * {
                 -webkit-user-select: text !important;
                 -moz-user-select: text !important;
                 -ms-user-select: text !important;
                 user-select: text !important;
-                pointer-events: auto !important;
             }
         `;
 
@@ -51,7 +52,7 @@
 
         // Loop through each found element and remove restrictions.
         restrictedElements.forEach(el => {
-            // Remove attributes that prevent editing or interaction.
+            // Removing the 'disabled' attribute is the proper way to make elements clickable again.
             el.removeAttribute('readonly');
             el.removeAttribute('disabled');
 
@@ -70,12 +71,12 @@
 
     /**
      * Overrides the native addEventListener to prevent sites from dynamically
-     * adding scripts that block user actions like copy, paste, and right-clicking.
+     * adding scripts that block user actions like copy, paste, and selecting text.
      */
     function preventEventHijacking() {
         const originalAddEventListener = EventTarget.prototype.addEventListener;
         EventTarget.prototype.addEventListener = function(type, listener, options) {
-            const forbiddenEvents = ['paste', 'copy', 'cut', 'contextmenu', 'selectstart'];
+            const forbiddenEvents = ['paste', 'copy', 'cut', 'selectstart'];
             if (forbiddenEvents.includes(type)) {
                 console.log(`Blocked a script from adding a '${type}' event listener.`);
                 return; // Silently block the addition of the event listener.
@@ -87,7 +88,7 @@
 
     // --- Main Execution ---
 
-    // 1. Inject the global CSS overrides.
+    // 1. Inject the global CSS overrides for text selection.
     injectGlobalStyles();
 
     // 2. Prevent scripts from adding new restrictive event listeners.
