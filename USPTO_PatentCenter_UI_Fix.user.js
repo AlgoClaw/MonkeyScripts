@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        USPTO Patent Center UI Fix (Modified)
+// @name        USPTO Patent Center UI Fix
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @version     2025.06.16.01
 // @description Customizes the USPTO Patent Center sidebar, hides headers, and reformats dates and spacing.
-// @match       *://patentcenter.uspto.gov/applications/*
+// @include     *://patentcenter.uspto.gov/applications/*
 // @grant       GM_addStyle
 // @run-at      document-idle
 // ==/UserScript==
