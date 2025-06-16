@@ -3,7 +3,7 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     2025.06.16.04
+// @version     2025.06.16.11
 // @description Customizes the USPTO Patent Center sidebar, hides headers, reformats dates, and auto-clicks close buttons in alerts.
 // @include     *://*.uspto.gov/*
 // @grant       GM_addStyle
@@ -14,7 +14,7 @@
     'use strict';
 
     // --- Configuration ---
-    const docCodesToSelect = ['SPEC', 'DRW', 'DRW.NONBW', 'CLM', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'REM', 'CTFR', 'A.NE', 'AP.PRE.REQ', 'AP.PRE.DEC', 'NOA'];
+    const docCodesToSelect = ['SPEC', 'CLM', 'DRW', 'DRW.NONBW', 'NT.CR.APP.PA', 'NT.INC.REPLY', 'NT.INCPL.APP', 'NTC.MISS.PRT', 'NTC.OMIT.APP', 'A.PA', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'A.I.', 'A.LA', 'A.NA', 'REM', 'CTFR', 'A.NE', 'CTAV', 'AP.PRE.REQ', 'AP.PRE.DEC', 'CTEQ', 'A.QU', 'A.I.', 'A.LA', 'A.NA', 'AMSB', 'AP.B', 'APBD', 'SA..', 'SADV', 'SAFR', 'SAPB', 'N271', 'NOA'];
     const highlightColor = '#b5ffcc'; // A pleasant light green
 
     /**
