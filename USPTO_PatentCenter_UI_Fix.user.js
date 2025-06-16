@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name        USPTO Patent Center UI FIx
+// @name        USPTO Patent Center UI Fix (Modified)
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     2025.06.15.01
-// @description Customizes the USPTO Patent Center sidebar for direct 'Documents' and 'Transactions' access, and enhances the documents table.
+// @version     2025.06.16.01
+// @description Customizes the USPTO Patent Center sidebar, hides headers, and reformats dates and spacing.
 // @match       *://patentcenter.uspto.gov/applications/*
 // @grant       GM_addStyle
 // @run-at      document-idle
@@ -14,12 +14,11 @@
     'use strict';
 
     // --- Configuration ---
-    const docCodesToSelect = ['CTFR', 'A...', 'CLM', 'REM'];
+    const docCodesToSelect = ['SPEC', 'DRW', 'CLM', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'REM', 'CTFR', 'A.NE', 'AP.PRE.REQ', 'AP.PRE.DEC', 'NOA'];
     const highlightColor = '#b5ffcc'; // A pleasant light green
 
     /**
      * Injects CSS into the page to handle styling changes safely.
-     * This is applied only once to avoid duplicating styles.
      */
     function applyGlobalStyles() {
         const styleId = 'uspto-enhancer-styles';
@@ -28,6 +27,41 @@
         }
 
         const styles = `
+            /* Hide the original header */
+            .linkHeading {
+                display: none !important;
+            }
+
+            /* Remove padding from the main card body housing the header */
+            .card-body {
+                padding: 0 !important;
+            }
+
+            /* Style for the new simplified header table */
+            .simplified-header-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 0 !important;
+            }
+            .simplified-header-table td {
+                padding: 2px 5px !important; /* Add a little padding for readability */
+                border: 1px solid #dee2e6;
+                line-height: 1.4; /* Ensure consistent line height */
+            }
+            .simplified-header-table td:first-child {
+                font-weight: bold;
+                width: 1%; /* Make column as narrow as its content allows */
+                white-space: nowrap; /* Prevent the label text from wrapping */
+                background-color: #f8f9fa;
+            }
+
+
+            /* Set padding for the main document table cells */
+             [id^='DataTables_Table_'] th, [id^='DataTables_Table_'] td {
+                padding: .2rem !important;
+                vertical-align: middle !important;
+            }
+
             /* Ensure the table takes up full width */
             [id^='DataTables_Table_'] {
                 width: 100% !important;
@@ -46,8 +80,8 @@
 
             /* Allow the description column to wrap and take up remaining space */
             [id^='DataTables_Table_'] > * > tr > :nth-child(3) {
-                width: 100%; /* Encourages it to fill available space */
-                white-space: normal !important; /* Explicitly allow wrapping */
+                width: 100%;
+                white-space: normal !important;
             }
 
             /* Hide all header icons (sort arrows, info icon) */
@@ -81,126 +115,233 @@
     }
 
     /**
-     * Adds a "Transactions" link to the side navigation menu by cloning the original "Documents" link.
-     * This preserves the SPA routing behavior and prevents full page reloads.
-     * This function is idempotent to prevent infinite loops with MutationObserver.
+     * Finds elements with negative or excessive spacing and adjusts them.
      */
-    function addSideNavLinks() {
-        // Find the UNPROCESSED "Documents & Transactions" list item to use as an anchor.
-        const originalLi = document.querySelector('li[data-name="documents-transactions"]');
-        if (!originalLi) {
-            return; // Can't find the anchor point, or it has already been processed.
-        }
-
-        const originalAnchor = originalLi.querySelector('a');
-        if (!originalAnchor) {
-            return; // Can't find the anchor link.
-        }
-
-        // --- CLONE THE ORIGINAL LINK TO PRESERVE SPA ROUTING ATTRIBUTES ---
-        const transactionsLi = originalLi.cloneNode(true);
-        const transactionsAnchor = transactionsLi.querySelector('a');
-
-        // --- CONFIGURE THE NEW TRANSACTIONS LINK ---
-        transactionsLi.setAttribute('data-name', 'transactions-link');
-        transactionsAnchor.textContent = 'Transactions';
-        transactionsAnchor.href = originalAnchor.href.replace('/ifw/docs', '/ifw/transactions');
-        // Update the routerlink attribute which is used by Angular for routing
-        transactionsAnchor.setAttribute('routerlink', 'ifw/transactions');
-
-        // --- RECONFIGURE THE ORIGINAL LINK TO BE "DOCUMENTS" ---
-        originalAnchor.textContent = 'Documents';
-        // Modify the original item's data-name so it's not found again. This is critical.
-        originalLi.setAttribute('data-name', 'documents-link-processed');
-
-        // --- INSERT THE NEW LINK INTO THE DOM ---
-        originalLi.after(transactionsLi);
+    function normalizeSpacing() {
+        // This function is disabled for now to prevent conflicts with the new header.
+        // It can be re-enabled if needed, but the new header logic is more targeted.
     }
 
 
     /**
-     * Updates the 'active' state for the Documents and Transactions links based on the current URL.
+     * Traverses the entire page to find and reformat date strings.
+     */
+    function reformatAllDatesOnPage() {
+        try {
+            const dateRegex = /\b(\d{1,2})\/(\d{1,2})\/((?:19|20)\d{2})\b/g;
+            const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+                acceptNode: function(node) {
+                    if (node.parentElement.closest('script, style, [data-dates-reformatted]')) {
+                        return NodeFilter.FILTER_REJECT;
+                    }
+                    if (dateRegex.test(node.nodeValue)) {
+                        dateRegex.lastIndex = 0;
+                        return NodeFilter.FILTER_ACCEPT;
+                    }
+                    return NodeFilter.FILTER_REJECT;
+                }
+            });
+
+            let node;
+            while (node = walker.nextNode()) {
+                node.nodeValue = node.nodeValue.replace(dateRegex, (match, month, day, year) => {
+                    const paddedMonth = month.padStart(2, '0');
+                    const paddedDay = day.padStart(2, '0');
+                    return `${year}-${paddedMonth}-${paddedDay}`;
+                });
+                node.parentElement.dataset.datesReformatted = 'true';
+            }
+        } catch (error) {
+            console.error('Error in reformatAllDatesOnPage:', error);
+        }
+    }
+
+    /**
+     * Replaces the default application info header with a simplified table.
+     */
+    function createSimplifiedHeader() {
+        const infoContainer = document.querySelector('pc-applications-data, pc-applications .card-body');
+        if (!infoContainer || infoContainer.dataset.headerSimplified) {
+            return;
+        }
+
+        const data = {};
+
+        const labels = infoContainer.querySelectorAll('h5');
+
+        const findDataByLabel = (labelText) => {
+            for (const h5 of labels) {
+                if (h5.textContent.includes(labelText)) {
+                    const p = h5.nextElementSibling;
+                    return p ? p : null;
+                }
+            }
+            return null;
+        };
+
+        // --- Data Extraction ---
+        const appNumElem = findDataByLabel('Application #');
+        if (appNumElem) data.appNumber = appNumElem.textContent.trim();
+        if (!data.appNumber) return;
+
+        const docketElem = findDataByLabel('Attorney Docket #');
+        if (docketElem) {
+            const clone = docketElem.cloneNode(true);
+            const button = clone.querySelector('button');
+            if (button) button.remove();
+            data.docketNumber = clone.textContent.trim();
+        }
+
+        const confirmElem = findDataByLabel('Confirmation #');
+        if (confirmElem) data.confirmation = confirmElem.textContent.trim();
+
+        const filingDateElem = findDataByLabel('Filing');
+        if (filingDateElem) data.filingDate = filingDateElem.textContent.trim();
+
+        const statusElem = findDataByLabel('Status');
+        if (statusElem) {
+            const clone = statusElem.cloneNode(true);
+            clone.querySelectorAll('span').forEach(span => span.remove());
+            data.status = clone.textContent.trim().replace(/\s+/g, ' ');
+        }
+
+        // MODIFICATION: Clean up the Patent Number field
+        const patentNumElem = findDataByLabel('Patent #');
+        if (patentNumElem) {
+            const fullText = patentNumElem.textContent.trim();
+            // Use a regex to extract only the number, which may include commas.
+            const match = fullText.match(/^[\d,]+/);
+            data.patentNumber = match ? match[0] : fullText;
+        }
+
+        const titleH3 = document.querySelector('h3.d-inline-block');
+        if (titleH3) data.title = titleH3.textContent.trim();
+
+        // --- Handle Publication Number ---
+        const storageKey = `pubNum_${data.appNumber}`;
+        // Find the publication link directly by its unique URL structure, which is more reliable.
+        const pubLink = document.querySelector('a[href*="ppubs.uspto.gov/pubwebapp/external.html"]');
+        if (pubLink) {
+            const pubNum = pubLink.textContent.trim().replace(/ /g, '').replace(/-/g, '');
+            sessionStorage.setItem(storageKey, pubNum);
+            data.publicationNumber = pubNum;
+        } else {
+            // If not on the current page, try to retrieve it from session storage.
+            data.publicationNumber = sessionStorage.getItem(storageKey) || '-';
+        }
+
+        // --- Table Creation ---
+        const infoCard = document.querySelector('pc-applications .card-body');
+        if (!infoCard) return;
+
+        const tableHTML = `
+            <table class="simplified-header-table">
+                <tbody>
+                    <tr><td>Application #</td><td>${data.appNumber || '-'}</td></tr>
+                    <tr><td>Attorney Docket #</td><td>${data.docketNumber || '-'}</td></tr>
+                    <tr><td>Confirmation #</td><td>${data.confirmation || '-'}</td></tr>
+                    <tr><td>U.S. Filing Date</td><td>${data.filingDate || '-'}</td></tr>
+                    <tr><td>Title</td><td>${data.title || '-'}</td></tr>
+                    <tr><td>Status</td><td>${data.status || '-'}</td></tr>
+                    <tr><td>Publication #</td><td>${data.publicationNumber || '-'}</td></tr>
+                    <tr><td>Patent #</td><td>${data.patentNumber || '-'}</td></tr>
+                </tbody>
+            </table>
+        `;
+
+        const originalTitleSection = infoCard.querySelector('section.border-bottom');
+        const originalDataSection = infoCard.querySelector('section.pt-3');
+
+        if (originalTitleSection && originalDataSection) {
+            const newHeaderContainer = document.createElement('div');
+            newHeaderContainer.innerHTML = tableHTML;
+            infoCard.insertBefore(newHeaderContainer, originalTitleSection);
+            originalTitleSection.remove();
+            originalDataSection.remove();
+        }
+        infoContainer.dataset.headerSimplified = 'true';
+        if(infoCard) infoCard.dataset.headerSimplified = 'true';
+    }
+
+
+    /**
+     * Adds a "Transactions" link to the side navigation menu.
+     */
+    function addSideNavLinks() {
+        const originalLi = document.querySelector('li[data-name="documents-transactions"]');
+        if (!originalLi || document.querySelector('li[data-name="transactions-link"]')) return;
+        const originalAnchor = originalLi.querySelector('a');
+        if (!originalAnchor) return;
+
+        const transactionsLi = originalLi.cloneNode(true);
+        const transactionsAnchor = transactionsLi.querySelector('a');
+        transactionsLi.setAttribute('data-name', 'transactions-link');
+        transactionsAnchor.textContent = 'Transactions';
+        transactionsAnchor.href = originalAnchor.href.replace('/ifw/docs', '/ifw/transactions');
+        transactionsAnchor.setAttribute('routerlink', 'ifw/transactions');
+
+        originalAnchor.textContent = 'Documents';
+        originalLi.setAttribute('data-name', 'documents-link-processed');
+        originalLi.after(transactionsLi);
+    }
+
+    /**
+     * Updates the 'active' state for the side navigation links.
      */
     function updateSideNavActiveState() {
         const docsLi = document.querySelector('li[data-name="documents-link-processed"]');
         const transLi = document.querySelector('li[data-name="transactions-link"]');
-
-        // Exit if the links haven't been created yet.
-        if (!docsLi || !transLi) {
-            return;
-        }
-
+        if (!docsLi || !transLi) return;
         const docsA = docsLi.querySelector('a');
         const transA = transLi.querySelector('a');
-
-        if (!docsA || !transA) {
-            return;
-        }
+        if (!docsA || !transA) return;
 
         const currentUrl = window.location.href;
-
-        // Check if the URL is for the transactions page
         if (currentUrl.includes('/ifw/transactions')) {
-            // Set Transactions link to active
-            transLi.classList.add('active');
-            transA.classList.add('active_nav');
-            // Set Documents link to inactive
-            docsLi.classList.remove('active');
-            docsA.classList.remove('active_nav');
-        }
-        // Check if the URL is for the documents page
-        else if (currentUrl.includes('/ifw/docs')) {
-            // Set Documents link to active
-            docsLi.classList.add('active');
-            docsA.classList.add('active_nav');
-            // Set Transactions link to inactive
-            transLi.classList.remove('active');
-            transA.classList.remove('active_nav');
+            transLi.classList.add('active', 'active_nav');
+            docsLi.classList.remove('active', 'active_nav');
+        } else if (currentUrl.includes('/ifw/docs')) {
+            docsLi.classList.add('active', 'active_nav');
+            transLi.classList.remove('active', 'active_nav');
         }
     }
 
-
     /**
      * Main function to process the documents table.
-     * @param {HTMLTableElement} documentsTable The table element to process.
      */
     function processTable(documentsTable) {
         const headerRow = documentsTable.querySelector('thead > tr');
-        if (!headerRow) return;
+        if (headerRow && !headerRow.dataset.headersProcessed) {
+            headerRow.cells[0].textContent = 'Mail Date';
+            headerRow.cells[1].textContent = 'Doc Code';
+            headerRow.cells[2].textContent = 'Document Description';
+            headerRow.cells[4].textContent = 'PDF';
+            headerRow.cells[5].textContent = 'XML';
+            headerRow.cells[6].textContent = 'DOCX';
+            headerRow.dataset.headersProcessed = 'true';
+        }
 
-        // --- Rename Headers by repurposing existing columns ---
-        headerRow.cells[0].textContent = 'Mail Date';
-        headerRow.cells[1].textContent = 'Doc Code';
-        headerRow.cells[2].textContent = 'Document Description';
-        headerRow.cells[4].textContent = 'PDF';
-        headerRow.cells[5].textContent = 'XML';
-        headerRow.cells[6].textContent = 'DOCX';
-
-        const rows = documentsTable.querySelectorAll('tbody > tr');
-
+        const rows = documentsTable.querySelectorAll('tbody > tr:not([data-processed="true"])');
         rows.forEach((row) => {
+            row.dataset.processed = 'true';
+
             const sourceCell = row.cells[5];
             const pdfCell = row.cells[4];
             const xmlCell = row.cells[5];
             const docxCell = row.cells[6];
 
-            // --- Separate Links ---
             if (sourceCell && pdfCell && xmlCell && docxCell) {
                 const allSpans = Array.from(sourceCell.querySelectorAll('span.text-primary.cursor-pointer'));
-
                 pdfCell.textContent = '';
                 xmlCell.textContent = '';
                 docxCell.textContent = '';
-
                 allSpans.forEach(span => {
                     const button = span.querySelector('button');
                     const linkText = (button ? button.textContent : span.textContent).trim();
-
                     if (linkText.startsWith('PDF')) pdfCell.appendChild(span);
                     else if (linkText.startsWith('XML')) xmlCell.appendChild(span);
                     else if (linkText.startsWith('DOCX')) docxCell.appendChild(span);
                 });
-
                 [pdfCell, xmlCell, docxCell].forEach(cell => {
                     const span = cell.querySelector('span');
                     if (span) {
@@ -215,77 +356,47 @@
                 });
             }
 
-            // --- Date Reformatting ---
-            const dateCell = row.cells[0];
-            if (dateCell) {
-                const originalDateText = dateCell.textContent.trim();
-                const dateParts = originalDateText.split('/');
-                if (dateParts.length === 3) {
-                    const [month, day, year] = dateParts;
-                    dateCell.textContent = `${year}-${month}-${day}`;
-                }
-            }
-
-            // --- Doc Code Highlighting and Checkbox Selection ---
             const docCodeCell = row.cells[1];
             const descriptionCell = row.cells[2];
             if (docCodeCell && descriptionCell) {
                 const docCodeText = docCodeCell.textContent.trim();
-                const docCodeFound = docCodesToSelect.some(code => docCodeText.toLowerCase() === code.toLowerCase());
-                if (docCodeFound) {
+                if (docCodesToSelect.some(code => docCodeText.toLowerCase() === code.toLowerCase())) {
                     descriptionCell.innerHTML = `<span style="background-color: ${highlightColor};">${descriptionCell.innerHTML}</span>`;
                     const checkbox = row.querySelector('input[type="checkbox"]');
-                    if (checkbox && !checkbox.checked) checkbox.click();
+                    if (checkbox && !checkbox.checked) {
+                        checkbox.click();
+                    }
                 }
             }
         });
     }
 
+
     /**
-     * Checks the page and runs the necessary enhancements.
-     * This function is designed to be called repeatedly without causing issues.
+     * Checks the page and runs all necessary enhancements.
      */
     function runEnhancer() {
-        // Modify the side navigation links. This function is now idempotent.
+        createSimplifiedHeader();
+        reformatAllDatesOnPage();
         addSideNavLinks();
-        // Update the active state of the nav links based on the URL.
         updateSideNavActiveState();
+        normalizeSpacing();
 
-        // Only run the table enhancements on the "docs" tab
+
         if (!/applications\/\d{8}\/ifw\/docs/.test(window.location.href)) {
             return;
         }
 
         const documentsTable = document.querySelector('[id^="DataTables_Table_"]');
-        if (!documentsTable) {
-            return;
+        if (documentsTable) {
+             processTable(documentsTable);
         }
-
-        const headerRow = documentsTable.querySelector('thead > tr');
-        if (!headerRow || !documentsTable.querySelector('tbody > tr')) {
-            return;
-        }
-
-        // This check prevents reprocessing the same table
-        if (headerRow.cells[0].textContent === 'Mail Date') {
-            return;
-        }
-
-        processTable(documentsTable);
     }
 
     // --- Main Execution ---
     applyGlobalStyles();
-
-    const observer = new MutationObserver(() => {
-        runEnhancer();
-    });
-
-    observer.observe(document.body, {
-        childList: true,
-        subtree: true
-    });
-
+    const observer = new MutationObserver(runEnhancer);
+    observer.observe(document.body, { childList: true, subtree: true });
     runEnhancer();
 
 })();
