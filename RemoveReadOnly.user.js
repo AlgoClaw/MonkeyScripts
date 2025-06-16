@@ -4,8 +4,8 @@
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
 // @include     *
-// @description null
-// @version     2025.06.15.05
+// @description Removes readonly, disabled, and unselectable attributes, and prevents event hijacking to re-enable user interaction.
+// @version     2025.06.16.10
 //
 // ==/UserScript==
 //
@@ -26,9 +26,12 @@
         const css = `
             /* This rule enables text selection everywhere. It is generally safe. */
             * {
+                -webkit-touch-callout: text !important;
                 -webkit-user-select: text !important;
+                -khtml-user-select: text !important;
                 -moz-user-select: text !important;
                 -ms-user-select: text !important;
+                -o-user-select: text !important;
                 user-select: text !important;
             }
         `;
@@ -47,7 +50,7 @@
     function enableElements() {
         // Select all elements on the page that have attributes designed to restrict them.
         const restrictedElements = document.querySelectorAll(
-            '[disabled], [readonly], [oncopy], [onpaste], [oncut], [oncontextmenu]'
+            '[disabled], [readonly], [oncopy], [onpaste], [oncut], [oncontextmenu], [unselectable="on"]'
         );
 
         // Loop through each found element and remove restrictions.
@@ -55,6 +58,7 @@
             // Removing the 'disabled' attribute is the proper way to make elements clickable again.
             el.removeAttribute('readonly');
             el.removeAttribute('disabled');
+            el.removeAttribute('unselectable');
 
             // Remove inline event handlers that prevent copy, paste, cut, or context menu.
             el.removeAttribute('oncopy');
