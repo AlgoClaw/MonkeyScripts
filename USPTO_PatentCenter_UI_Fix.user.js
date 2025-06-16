@@ -3,9 +3,9 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     2025.06.16.02
-// @description Customizes the USPTO Patent Center sidebar, hides headers, and reformats dates and spacing.
-// @include     *://patentcenter.uspto.gov/applications/*
+// @version     2025.06.16.04
+// @description Customizes the USPTO Patent Center sidebar, hides headers, reformats dates, and auto-clicks close buttons in alerts.
+// @include     *://*.uspto.gov/*
 // @grant       GM_addStyle
 // @run-at      document-idle
 // ==/UserScript==
@@ -371,11 +371,31 @@
         });
     }
 
+    /**
+     * Finds and clicks any buttons with the class "close" within an "alert" element.
+     * This is useful for automatically dismissing pop-up alerts.
+     */
+    function autoClickCloseButtons() {
+        // Find all buttons with class 'close' inside an element with class 'alert' that haven't been processed yet.
+        const closeButtons = document.querySelectorAll('.alert button.close:not([data-autoclicked="true"])');
+        closeButtons.forEach(button => {
+            // Mark the button immediately to prevent re-processing by the same or subsequent observer calls
+            button.dataset.autoclicked = 'true';
+
+            // Ensure the button is actually visible before clicking
+            if (button.offsetParent !== null) {
+                console.log('USPTO UI Fix: Automatically clicking "close" button inside an alert.', button);
+                button.click();
+            }
+        });
+    }
+
 
     /**
      * Checks the page and runs all necessary enhancements.
      */
     function runEnhancer() {
+        autoClickCloseButtons();
         createSimplifiedHeader();
         reformatAllDatesOnPage();
         addSideNavLinks();
