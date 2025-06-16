@@ -3,7 +3,7 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     2025.06.16.01
+// @version     2025.06.16.02
 // @description Customizes the USPTO Patent Center sidebar, hides headers, and reformats dates and spacing.
 // @include     *://patentcenter.uspto.gov/applications/*
 // @grant       GM_addStyle
@@ -14,7 +14,7 @@
     'use strict';
 
     // --- Configuration ---
-    const docCodesToSelect = ['SPEC', 'DRW', 'CLM', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'REM', 'CTFR', 'A.NE', 'AP.PRE.REQ', 'AP.PRE.DEC', 'NOA'];
+    const docCodesToSelect = ['SPEC', 'DRW', 'DRW.NONBW', 'CLM', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'REM', 'CTFR', 'A.NE', 'AP.PRE.REQ', 'AP.PRE.DEC', 'NOA'];
     const highlightColor = '#b5ffcc'; // A pleasant light green
 
     /**
