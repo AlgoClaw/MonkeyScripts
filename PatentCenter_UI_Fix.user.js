@@ -1,10 +1,10 @@
 // ==UserScript==
-// @name        USPTO Patent Center UI Fix
-// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
-// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     2025.06.16.20
-// @description Customizes the USPTO Patent Center sidebar, hides headers, reformats dates, auto-clicks close buttons in alerts, and handles session timeouts.
+// @name        Patent Center - UI Fix
+// @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_UI_Fix.user.js
+// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_UI_Fix.user.js
+// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_UI_Fix.user.js
+// @version     2025.06.16.01
+// @description null
 // @include     *://*.uspto.gov/*
 // @grant       GM_addStyle
 // @run-at      document-idle
@@ -12,10 +12,6 @@
 
 (function() {
     'use strict';
-
-    // --- Configuration ---
-    const docCodesToSelect = ['SPEC', 'CLM', 'DRW', 'DRW.NONBW', 'NT.CR.APP.PA', 'NT.INC.REPLY', 'NT.INCPL.APP', 'NTC.MISS.PRT', 'NTC.OMIT.APP', 'A.PA', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'A.I.', 'A.LA', 'A.NA', 'REM', 'CTFR', 'A.NE', 'CTAV', 'AP.PRE.REQ', 'AP.PRE.DEC', 'CTEQ', 'A.QU', 'A.I.', 'A.LA', 'A.NA', 'AMSB', 'AP.B', 'APBD', 'SA..', 'SADV', 'SAFR', 'SAPB', 'N271','APDA', 'APDN', 'APDP', 'APDR', 'APDS', 'APDS.NGR', 'APDT', 'APE2', 'APEA', 'APND', 'BD.A', 'CLM.NE', 'NOA'];
-    const highlightColor = '#b5ffcc'; // A pleasant light green
 
     /**
      * Injects CSS into the page to handle styling changes safely.
@@ -113,15 +109,6 @@
             document.head.appendChild(styleNode);
         }
     }
-
-    /**
-     * Finds elements with negative or excessive spacing and adjusts them.
-     */
-    function normalizeSpacing() {
-        // This function is disabled for now to prevent conflicts with the new header.
-        // It can be re-enabled if needed, but the new header logic is more targeted.
-    }
-
 
     /**
      * Traverses the entire page to find and reformat date strings.
@@ -355,19 +342,6 @@
                     }
                 });
             }
-
-            const docCodeCell = row.cells[1];
-            const descriptionCell = row.cells[2];
-            if (docCodeCell && descriptionCell) {
-                const docCodeText = docCodeCell.textContent.trim();
-                if (docCodesToSelect.some(code => docCodeText.toLowerCase() === code.toLowerCase())) {
-                    descriptionCell.innerHTML = `<span style="background-color: ${highlightColor};">${descriptionCell.innerHTML}</span>`;
-                    const checkbox = row.querySelector('input[type="checkbox"]');
-                    if (checkbox && !checkbox.checked) {
-                        checkbox.click();
-                    }
-                }
-            }
         });
     }
 
@@ -388,36 +362,6 @@
                 button.click();
             }
         });
-    }
-
-    /**
-     * Monitors for the session timeout dialog and clicks the "Stay Signed In" button.
-     */
-    function staySignedIn() {
-        const staySignedInButton = document.querySelector('#stmStaySignedInBtn');
-        if (staySignedInButton && staySignedInButton.offsetParent !== null) {
-            console.log('USPTO UI Fix: Automatically clicking "Yes, keep me signed in" button.', staySignedInButton);
-            staySignedInButton.click();
-        } else {
-            console.log(`USPTO UI Fix: Sign in dialog not found at ${new Date().toLocaleTimeString()}.`);
-        }
-    }
-
-     /**
-     * Sends a GET request to the server to keep the session alive.
-     */
-    function resetSessionTimer() {
-        fetch('https://patentcenter.uspto.gov/reset-timer')
-            .then(response => {
-                if (response.ok) {
-                    console.log(`USPTO UI Fix: Session timer reset successfully at ${new Date().toLocaleTimeString()}.`);
-                } else {
-                    console.error('USPTO UI Fix: Failed to reset session timer.', response.status, response.statusText);
-                }
-            })
-            .catch(error => {
-                console.error('USPTO UI Fix: Error while trying to reset session timer.', error);
-            });
     }
 
     /**
@@ -447,11 +391,5 @@
     const observer = new MutationObserver(runEnhancer);
     observer.observe(document.body, { childList: true, subtree: true });
     runEnhancer(); // Run enhancements once on page load
-
-    // Periodically check for the session timeout dialog every minute
-    setInterval(staySignedIn, 60000);
-
-    // Periodically reset the session timer every 5 minutes (300,000 milliseconds)
-    setInterval(resetSessionTimer, 300000);
 
 })();
