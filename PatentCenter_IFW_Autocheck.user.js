@@ -3,8 +3,8 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_IFW_Autocheck.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
-// @version     2025.06.16.1
-// @description null
+// @version     2025.06.16.3
+// @description Robustly highlights and selects checkboxes for specific document codes in the USPTO Patent Center.
 // @include     *://*.uspto.gov/*
 // @grant       none
 // @run-at      document-idle
@@ -14,44 +14,83 @@
     'use strict';
 
     // --- Configuration ---
-    // This array contains the document codes that will be automatically selected and highlighted.
     const docCodesToSelect = ['SPEC', 'CLM', 'DRW', 'DRW.NONBW', 'NT.CR.APP.PA', 'NT.INC.REPLY', 'NT.INCPL.APP', 'NTC.MISS.PRT', 'NTC.OMIT.APP', 'A.PA', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'A.I.', 'A.LA', 'A.NA', 'REM', 'CTFR', 'A.NE', 'CTAV', 'AP.PRE.REQ', 'AP.PRE.DEC', 'CTEQ', 'A.QU', 'A.I.', 'A.LA', 'A.NA', 'AMSB', 'AP.B', 'APBD', 'SA..', 'SADV', 'SAFR', 'SAPB', 'N271','APDA', 'APDN', 'APDP', 'APDR', 'APDS', 'APDS.NGR', 'APDT', 'APE2', 'APEA', 'APND', 'BD.A', 'CLM.NE', 'NOA'];
-    // This is the color used for highlighting the document description text.
     const highlightColor = '#b5ffcc'; // A pleasant light green
+
+    // To store the correct column indexes once determined
+    let columnIndex = {
+        docCode: -1,
+        description: -1,
+        determined: false // Flag to ensure we only determine columns once
+    };
+
+    /**
+     * Determines the correct column indexes by reading the table headers.
+     * This makes the script resilient to column reordering.
+     * @param {HTMLTableElement} documentsTable - The table to process.
+     * @returns {boolean} - True if columns were found, false otherwise.
+     */
+    function findColumnIndexes(documentsTable) {
+        const headers = documentsTable.querySelectorAll('thead th');
+        if (headers.length === 0) {
+            console.log("IFW Autocheck: Could not find table headers.");
+            return false;
+        }
+
+        headers.forEach((header, index) => {
+            const headerText = header.textContent.trim().toLowerCase();
+            if (headerText.includes('doc code')) {
+                columnIndex.docCode = index;
+            } else if (headerText.includes('document description')) {
+                columnIndex.description = index;
+            }
+        });
+
+        if (columnIndex.docCode === -1 || columnIndex.description === -1) {
+            console.error("IFW Autocheck: Failed to find 'Doc Code' or 'Document Description' columns.");
+            return false;
+        }
+
+        console.log("IFW Autocheck: Column indexes determined:", columnIndex);
+        columnIndex.determined = true;
+        return true;
+    }
+
 
     /**
      * Processes the documents table to highlight rows and select checkboxes.
      * @param {HTMLTableElement} documentsTable - The table element containing the documents.
      */
     function highlightAndSelect(documentsTable) {
-        // Find all rows in the table body that have not yet been processed.
-        // The 'data-processed' attribute is added to prevent re-processing rows.
-        const rows = documentsTable.querySelectorAll('tbody > tr:not([data-processed="true"])');
+        // Find column indexes if we haven't already.
+        if (!columnIndex.determined) {
+            if (!findColumnIndexes(documentsTable)) {
+                return; // Stop if we can't find the required columns.
+            }
+        }
+
+        // Find only rows that have not been processed yet.
+        const rows = documentsTable.querySelectorAll('tbody > tr:not([data-autocheck-processed="true"])');
+        if (rows.length === 0) return; // No new rows to process
+
+        console.log(`IFW Autocheck: Processing ${rows.length} new row(s).`);
 
         rows.forEach((row) => {
-            // Mark the row as processed immediately to avoid duplicate actions.
-            row.dataset.processed = 'true';
+            // Mark the row as processed so we don't check it again.
+            row.dataset.autocheckProcessed = 'true';
 
-            const docCodeCell = row.cells[1];
-            const descriptionCell = row.cells[2];
+            const docCodeCell = row.cells[columnIndex.docCode];
+            const descriptionCell = row.cells[columnIndex.description];
 
-            // Ensure the necessary cells exist before proceeding.
             if (docCodeCell && descriptionCell) {
                 const docCodeText = docCodeCell.textContent.trim();
 
-                // Check if the document code in the cell matches any code in our list.
-                // The comparison is case-insensitive.
                 if (docCodesToSelect.some(code => docCodeText.toLowerCase() === code.toLowerCase())) {
-
-                    // Highlight the description by wrapping its content in a span with a background color.
                     descriptionCell.innerHTML = `<span style="background-color: ${highlightColor};">${descriptionCell.innerHTML}</span>`;
-
-                    // Find the checkbox in the row.
                     const checkbox = row.querySelector('input[type="checkbox"]');
-
-                    // If a checkbox exists and is not already checked, click it.
                     if (checkbox && !checkbox.checked) {
                         checkbox.click();
+                        console.log(`IFW Autocheck: Selected checkbox for Doc Code: ${docCodeText}`);
                     }
                 }
             }
@@ -60,30 +99,36 @@
 
     /**
      * Checks the page for the documents table and runs the processing function.
-     * This function is designed to be called repeatedly by a MutationObserver.
+     * This function is called by the MutationObserver whenever the page content changes.
      */
     function runEnhancer() {
-        // This script should only run on the "Documents & Transactions" page for a specific application.
+        // Exit if we are not on the correct page.
         if (!/applications\/\d{8}\/ifw\/docs/.test(window.location.href)) {
             return;
         }
 
         const documentsTable = document.querySelector('[id^="DataTables_Table_"]');
+        // If the table exists, run the processing function.
+        // This is safe to run multiple times because highlightAndSelect() marks
+        // individual rows as processed, preventing duplicate actions.
         if (documentsTable) {
              highlightAndSelect(documentsTable);
         }
     }
 
     // --- Main Execution ---
+    console.log("IFW Autocheck script loaded and running...");
 
-    // A MutationObserver is used to detect when new content (like the table) is added to the page.
-    // This is necessary because the table may be loaded dynamically via JavaScript.
+    // Use a MutationObserver to watch for changes to the page content.
+    // This is essential for modern websites that load data dynamically.
     const observer = new MutationObserver(runEnhancer);
 
-    // Start observing the entire document body for changes to its child elements.
-    observer.observe(document.body, { childList: true, subtree: true });
+    // Start observing the entire document body for new elements being added or removed.
+    observer.observe(document.body, {
+        childList: true,
+        subtree: true
+    });
 
-    // Run the enhancer once on initial page load, in case the content is already present.
+    // Run the function once on initial load, just in case the content is already there.
     runEnhancer();
-
 })();
