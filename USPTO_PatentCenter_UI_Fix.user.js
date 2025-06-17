@@ -3,8 +3,8 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/USPTO_PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_PatentCenter_UI_Fix.user.js
-// @version     2025.06.16.12
-// @description Customizes the USPTO Patent Center sidebar, hides headers, reformats dates, and auto-clicks close buttons in alerts.
+// @version     2025.06.16.20
+// @description Customizes the USPTO Patent Center sidebar, hides headers, reformats dates, auto-clicks close buttons in alerts, and handles session timeouts.
 // @include     *://*.uspto.gov/*
 // @grant       GM_addStyle
 // @run-at      document-idle
@@ -390,6 +390,35 @@
         });
     }
 
+    /**
+     * Monitors for the session timeout dialog and clicks the "Stay Signed In" button.
+     */
+    function staySignedIn() {
+        const staySignedInButton = document.querySelector('#stmStaySignedInBtn');
+        if (staySignedInButton && staySignedInButton.offsetParent !== null) {
+            console.log('USPTO UI Fix: Automatically clicking "Yes, keep me signed in" button.', staySignedInButton);
+            staySignedInButton.click();
+        } else {
+            console.log(`USPTO UI Fix: Sign in dialog not found at ${new Date().toLocaleTimeString()}.`);
+        }
+    }
+
+     /**
+     * Sends a GET request to the server to keep the session alive.
+     */
+    function resetSessionTimer() {
+        fetch('https://patentcenter.uspto.gov/reset-timer')
+            .then(response => {
+                if (response.ok) {
+                    console.log(`USPTO UI Fix: Session timer reset successfully at ${new Date().toLocaleTimeString()}.`);
+                } else {
+                    console.error('USPTO UI Fix: Failed to reset session timer.', response.status, response.statusText);
+                }
+            })
+            .catch(error => {
+                console.error('USPTO UI Fix: Error while trying to reset session timer.', error);
+            });
+    }
 
     /**
      * Checks the page and runs all necessary enhancements.
@@ -417,6 +446,12 @@
     applyGlobalStyles();
     const observer = new MutationObserver(runEnhancer);
     observer.observe(document.body, { childList: true, subtree: true });
-    runEnhancer();
+    runEnhancer(); // Run enhancements once on page load
+
+    // Periodically check for the session timeout dialog every minute
+    setInterval(staySignedIn, 60000);
+
+    // Periodically reset the session timer every 5 minutes (300,000 milliseconds)
+    setInterval(resetSessionTimer, 300000);
 
 })();
