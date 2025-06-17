@@ -3,7 +3,7 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_IFW_Autocheck.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
-// @version     2025.06.16.3
+// @version     2025.06.16.04
 // @description Robustly highlights and selects checkboxes for specific document codes in the USPTO Patent Center.
 // @include     *://*.uspto.gov/*
 // @grant       none
@@ -14,7 +14,85 @@
     'use strict';
 
     // --- Configuration ---
-    const docCodesToSelect = ['SPEC', 'CLM', 'DRW', 'DRW.NONBW', 'NT.CR.APP.PA', 'NT.INC.REPLY', 'NT.INCPL.APP', 'NTC.MISS.PRT', 'NTC.OMIT.APP', 'A.PA', 'CTRS', 'ELC.', 'CTNF', 'EXIN', 'A...', 'A.I.', 'A.LA', 'A.NA', 'REM', 'CTFR', 'A.NE', 'CTAV', 'AP.PRE.REQ', 'AP.PRE.DEC', 'CTEQ', 'A.QU', 'A.I.', 'A.LA', 'A.NA', 'AMSB', 'AP.B', 'APBD', 'SA..', 'SADV', 'SAFR', 'SAPB', 'N271','APDA', 'APDN', 'APDP', 'APDR', 'APDS', 'APDS.NGR', 'APDT', 'APE2', 'APEA', 'APND', 'BD.A', 'CLM.NE', 'NOA'];
+    const docCodesToSelect = [
+
+        // "INCOMING" and "OUTGOING" are from the USPTO's perspective (to maintain consistency with the "Doc Code Direction").
+        // An "INCOMING" document is one filed/submitted by the Applicant to the USPTO.
+        // An "OUTGOING" document is one mailed from the USPTO to the Applicant.
+
+        // INCOMING - Core Application Documents
+        'SPEC', ////////// Specification
+        'CLM', /////////// Claims
+        'DRW', /////////// Drawings – only Black and White line drawings
+        'DRW.NONBW', ///// Drawings-other than Black and White line drawings
+        'NDRW', ////////// New or Additional Drawings
+
+        // OUTGOING - Actions and Other Examiner Documents
+        'CTRS', ////////// Requirement for Restriction/Election
+        'CTNF', ////////// Non-Final Rejection
+        'EXIN', ////////// Examiner Interview Summary Record (PTOL - 413)
+        'CTFR', ////////// Final Rejection
+        'CTMS', ////////// Miscellaneous Action with SSP
+        'CTAV', ////////// Advisory Action (PTOL-303)
+        'SADV', ////////// Supplemental Advisory Action
+        'CTEQ', ////////// Ex Parte Quayle Action
+        'AP.PRE.DEC', //// Pre-Brief Appeal Conference decision
+        'NOA', /////////// Notice of Allowance
+        'N271', ////////// Response to Amendment under Rule 312
+
+        // INCOMING - Remarks and Response Type
+        'REM', /////////// Applicant Arguments or Remarks Made in an Amendment
+        'A.PE', ////////// Preliminary Amendment
+        'ELC.', ////////// Response to Election / Restriction Filed
+        'SA..', ////////// Supplemental Response or Supplemental Amendment
+        'A...', ////////// Amendment/Req Reconsideration-After Non-Final Reject
+        'A.NE', ////////// Response After Final Action
+        'SAFR', ////////// Supplemental Amendment after Final Rejection
+        'RCEX', ////////// Request for Continued Examination (RCE)
+        'AMSB', ////////// Amendment Submitted/Entered with Filing of CPA/RCE
+        'AP.PRE.REQ', //// Pre-Brief Conference request
+        'BD.A', ////////// Amendment/Argument after Patent Board Decision
+        'A.QU', ////////// Response after Ex Parte Quayle Action
+        'A.NA', ////////// Amendment after Notice of Allowance (Rule 312)
+        'N427', ////////// Post Allowance Communication - Incoming
+
+        // INCOMING - Remarks and Response Type - DEFECTIVE
+        'A.I.', ////////// Informal or Non-Responsive Amendment
+        'A.LA', ////////// Untimely (Late) Amendment Filed
+        'DRW.NE', //////// Drawings - Amendment Not Entered
+        'RCE.NE', //////// RCE not entered
+        'ABST.NE', /////// Abstract-Amendment Not Entered
+        'CLM.NE', //////// Claim-Amendment Not Entered
+        'DRW.NE', //////// Drawings - Amendment Not Entered
+        'SPEC.NE', /////// Specification-Amendment Not Entered
+
+        // Notices - Incomplete / Omitted / Missing / Defective / Informal
+        'NT.INCPL.APP', // Notice of Incomplete Application
+        'NTC.OMIT.APP', // Notice of Omitted Items Application
+        'NTC.MISS.PRT', // Notice to File Missing Parts
+        'NT.CR.APP.PA', // Notice to File Corrected Application Papers
+        'NFDR', ////////// Notice of Formal Drawings Required
+        'NT.INC.REPLY', // Notice of Incomplete Reply
+        'NTC.A.NONCPL', // Notice to the applicant regarding a Non-Compliant or Non-Responsive Amendment
+        'APBD', ////////// Notice - Defective Appeal Brief
+        'APND', ////////// Notice - Defective Notice of Appeal
+
+        // Appeal Documents
+        'AP.B', ////////// Appeal Brief Filed
+        'SAPB', ////////// Supplemental Appeal Brief
+        'APDA', ////////// Patent Board Decision - Examiner Affirmed
+        'APDN', ////////// Patent Board Decision 196(b)
+        'APDP', ////////// Patent Board Decision - Examiner Affirmed in Part
+        'APDR', ////////// Patent Board Decision - Examiner Reversed
+        'APDS', ////////// Dismissal of Appeal
+        'APDS.NGR', ////// Appeal Dismissed- No response to NGR PTAB Decision
+        'APDT', ////////// Patent Board Decision - Requirement under 196(D)
+        'APE2', ////////// 2nd or Subsequent Examiner's Answer to Appeal Brief
+        'APEA', ////////// Examiner's Answer to Appeal Brief
+
+        // keep at end
+        'null'
+    ];
     const highlightColor = '#b5ffcc'; // A pleasant light green
 
     // To store the correct column indexes once determined
