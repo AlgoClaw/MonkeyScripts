@@ -3,9 +3,9 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_UI_Fix.user.js
-// @version     2025.06.16.01
+// @version     2025.06.17.02
 // @description null
-// @include     *://*.uspto.gov/*
+// @include     *://patentcenter.uspto.gov/*
 // @grant       GM_addStyle
 // @run-at      document-idle
 // ==/UserScript==
@@ -51,6 +51,23 @@
                 background-color: #f8f9fa;
             }
 
+            /* Style for the new simplified application info table */
+            .simplified-info-table {
+                width: 100%;
+                border-collapse: collapse;
+                margin: 1rem 0 !important; /* Add some margin for separation */
+            }
+            .simplified-info-table td {
+                padding: 4px 8px !important;
+                border: 1px solid #dee2e6;
+                line-height: 1.4;
+            }
+            .simplified-info-table td:first-child {
+                font-weight: bold;
+                width: 1%;
+                white-space: nowrap;
+                background-color: #f8f9fa;
+            }
 
             /* Set padding for the main document table cells */
              [id^='DataTables_Table_'] th, [id^='DataTables_Table_'] td {
@@ -230,7 +247,7 @@
                     <tr><td>U.S. Filing Date</td><td>${data.filingDate || '-'}</td></tr>
                     <tr><td>Title</td><td>${data.title || '-'}</td></tr>
                     <tr><td>Status</td><td>${data.status || '-'}</td></tr>
-                    <tr><td>Publication #</td><td>${data.publicationNumber || '-'}</td></tr>
+                    <!-- <tr><td>Publication #</td><td>${data.publicationNumber || '-'}</td></tr> -->
                     <tr><td>Patent #</td><td>${data.patentNumber || '-'}</td></tr>
                 </tbody>
             </table>
@@ -250,6 +267,131 @@
         if(infoCard) infoCard.dataset.headerSimplified = 'true';
     }
 
+    /**
+     * Replaces the default application data block with a simplified table.
+     */
+    function createSimplifiedAppInfo() {
+        // This targets the "Application data" block on the main application page.
+        const infoContainer = document.querySelector('.row.px-3:not([data-info-simplified="true"])');
+        if (!infoContainer) {
+            return;
+        }
+
+        const data = {};
+
+        // Helper function to find an element by its preceding h5 label
+        const findElementByLabel = (labelText) => {
+            const allH5s = infoContainer.querySelectorAll('h5');
+            for (const h5 of allH5s) {
+                // Use trim() and includes() for robust matching against labels
+                if (h5.textContent.trim().includes(labelText)) {
+                    return h5.nextElementSibling;
+                }
+            }
+            return null;
+        };
+
+        // Helper to get clean text from a label's value element
+        const getTextFromLabel = (labelText) => {
+            const elem = findElementByLabel(labelText);
+            // Replace multiple spaces/newlines with a single space for cleanliness
+            return elem ? elem.textContent.trim().replace(/\s\s+/g, ' ') : null;
+        };
+
+        // --- Data Extraction ---
+        data.appType = getTextFromLabel('Application type');
+        data.groupArtUnit = getTextFromLabel('Group art unit');
+        data.classSubclass = getTextFromLabel('Class/subclass');
+        data.aia = getTextFromLabel('AIA (first inventor to file)');
+        data.pubNumber = getTextFromLabel('Earliest publication #');
+        data.pubDate = getTextFromLabel('Earliest publication date');
+        data.confirmation = getTextFromLabel('Confirmation #');
+        data.intlReg = getTextFromLabel('Intl. registration #');
+        data.intlRegDate = getTextFromLabel('Intl. registration publication date');
+
+
+        // --- Special Handling for Complex Elements ---
+
+        // Examiner (name and phone are in separate divs)
+        const examinerElem = findElementByLabel('Examiner');
+        if (examinerElem) {
+            const nameDiv = examinerElem.querySelector('div:first-child');
+            const phoneDiv = examinerElem.querySelector('div.text-muted');
+            data.examinerName = nameDiv ? nameDiv.textContent.trim() : null;
+            data.examinerPhone = phoneDiv ? phoneDiv.textContent.trim() : null;
+        }
+
+        // Entity Status (has an "Edit" button to be removed)
+        const entityStatusElem = findElementByLabel('Entity status');
+        if (entityStatusElem) {
+            const clone = entityStatusElem.cloneNode(true);
+            const button = clone.querySelector('button');
+            if (button) button.remove();
+            data.entityStatus = clone.textContent.trim().replace(/\s\s+/g, ' ');
+        }
+
+        // Assignee (name and location are in separate divs)
+        const assigneeElem = findElementByLabel('Assignee for publication');
+        if (assigneeElem) {
+            const nameDiv = assigneeElem.querySelector('li > div:first-child');
+            const locationDiv = assigneeElem.querySelector('li > div.text-muted');
+            data.assigneeName = nameDiv ? nameDiv.textContent.trim() : null;
+            data.assigneeLocation = locationDiv ? locationDiv.textContent.trim() : null;
+        }
+
+        // Applicant (name and location are in separate divs)
+        const applicantElem = findElementByLabel('Applicants');
+        if (applicantElem) {
+            const nameDiv = applicantElem.querySelector('li > div:first-child');
+            const locationDiv = applicantElem.querySelector('li > div.text-muted');
+            data.applicantName = nameDiv ? nameDiv.textContent.trim() : null;
+            data.applicantLocation = locationDiv ? locationDiv.textContent.trim() : null;
+        }
+
+
+        // --- Table Creation ---
+        const tableRows = [
+            { label: 'Application Type', value: data.appType },
+            { label: 'Examiner Name', value: data.examinerName },
+            { label: 'Examiner Phone', value: data.examinerPhone },
+            { label: 'Group Art Unit', value: data.groupArtUnit },
+            //{ label: 'Class/Subclass', value: data.classSubclass },
+            //{ label: 'AIA', value: data.aia },
+            { label: 'Entity Status', value: data.entityStatus },
+            //{ label: 'Confirmation #', value: data.confirmation },
+            { label: 'Earliest Pub. #', value: data.pubNumber },
+            { label: 'Earliest Pub. Date', value: data.pubDate },
+            { label: 'Assignee Name', value: data.assigneeName },
+            { label: 'Assignee Location', value: data.assigneeLocation },
+            { label: 'Applicant Name', value: data.assigneeName },
+            { label: 'Applicant Location', value: data.assigneeLocation },
+            { label: 'Intl. Reg. #', value: data.intlReg },
+            { label: 'Intl. Reg. Date', value: data.intlRegDate },
+        ];
+
+        // Filter out any rows where the value is null, empty, or just a hyphen
+        const filteredRows = tableRows.filter(row => row.value && row.value.trim() && row.value.trim() !== '-');
+
+        if (filteredRows.length === 0) {
+            // If we somehow didn't extract any data, bail out to avoid breaking the page
+            infoContainer.dataset.infoSimplified = 'true'; // Mark as processed
+            return;
+        }
+
+        const tableHTML = `
+            <div class="col-12">
+                <table class="simplified-info-table">
+                    <tbody>
+                        ${filteredRows.map(row => `<tr><td>${row.label}</td><td>${row.value}</td></tr>`).join('')}
+                    </tbody>
+                </table>
+            </div>
+        `;
+
+        // Replace the original messy container with our clean table
+        infoContainer.innerHTML = tableHTML;
+        infoContainer.dataset.infoSimplified = 'true';
+    }
 
     /**
      * Adds a "Transactions" link to the side navigation menu.
@@ -370,11 +512,10 @@
     function runEnhancer() {
         autoClickCloseButtons();
         createSimplifiedHeader();
+        createSimplifiedAppInfo();
         reformatAllDatesOnPage();
         addSideNavLinks();
         updateSideNavActiveState();
-        normalizeSpacing();
-
 
         if (!/applications\/\d{8}\/ifw\/docs/.test(window.location.href)) {
             return;
