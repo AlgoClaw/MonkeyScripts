@@ -3,9 +3,9 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_IFW_Autocheck.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
-// @version     2025.06.16.04
+// @version     2025.06.17.02
 // @description Robustly highlights and selects checkboxes for specific document codes in the USPTO Patent Center.
-// @include     *://*.uspto.gov/*
+// @include     *://patentcenter.uspto.gov/*
 // @grant       none
 // @run-at      document-idle
 // ==/UserScript==
