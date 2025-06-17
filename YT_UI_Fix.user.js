@@ -6,7 +6,7 @@
 // @match       *://*.youtube.com/*
 // @grant       unsafeWindow
 // @description Keeps the video progress bar visible and ensures it updates in real-time.
-// @version     0.006
+// @version     2025.06.17.01
 //
 // ==/UserScript==
 //
