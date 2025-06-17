@@ -3,7 +3,7 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_SignIn_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_SignIn_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_SignIn_Fix.user.js
-// @version     2025.06.16.1
+// @version     2025.06.17.2
 // @description Handles session timeouts by clicking "Stay Signed In" and resetting the session timer.
 // @include     *://*.uspto.gov/*
 // @grant       none
@@ -23,11 +23,11 @@
 
         // Check if the button exists and is visible on the page
         if (staySignedInButton && staySignedInButton.offsetParent !== null) {
-            console.log('USPTO UI Fix: Automatically clicking "Yes, keep me signed in" button.', staySignedInButton);
+            console.log(`Sign In Dialog: Automatically clicking "Yes, keep me signed in" buttonat ${new Date().toLocaleTimeString()}.`, staySignedInButton);
             staySignedInButton.click();
         } else {
             // Log to the console if the dialog isn't found, for debugging purposes.
-            console.log(`USPTO UI Fix: Sign in dialog not found at ${new Date().toLocaleTimeString()}.`);
+            console.log(`Sign In Dialog: Sign in dialog NOT found at ${new Date().toLocaleTimeString()}.`);
         }
     }
 
@@ -41,15 +41,15 @@
             .then(response => {
                 if (response.ok) {
                     // Log a success message to the console
-                    console.log(`USPTO UI Fix: Session timer reset successfully at ${new Date().toLocaleTimeString()}.`);
+                    console.log(`Reset Timer: Session timer reset successfully at ${new Date().toLocaleTimeString()}.`);
                 } else {
                     // Log an error if the request fails
-                    console.error('USPTO UI Fix: Failed to reset session timer.', response.status, response.statusText);
+                    console.error('Reset Timer: Failed to reset session timer.', response.status, response.statusText);
                 }
             })
             .catch(error => {
                 // Log any network errors that occur during the fetch
-                console.error('USPTO UI Fix: Error while trying to reset session timer.', error);
+                console.error('Reset Timer: Error while trying to reset session timer.', error);
             });
     }
 
