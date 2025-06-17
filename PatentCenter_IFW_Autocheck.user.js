@@ -1,8 +1,8 @@
 // ==UserScript==
 // @name        Patent Center - IFW Autocheck
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_IFW_Autocheck.user.js
-// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_IFW_Autocheck.user.js
-// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/USPTO_IFW_Autocheck.user.js
+// @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
+// @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_IFW_Autocheck.user.js
 // @version     2025.06.16.1
 // @description null
 // @include     *://*.uspto.gov/*
