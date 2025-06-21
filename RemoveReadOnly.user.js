@@ -4,8 +4,8 @@
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/RemoveReadOnly.user.js
 // @include     *
-// @description Removes readonly, disabled, and unselectable attributes, and prevents event hijacking to re-enable user interaction.
-// @version     2025.06.16.10
+// @description Removes readonly attributes and event hijacking. Patched to prevent conflicts on gemini.google.com.
+// @version     2025.06.20.11
 //
 // ==/UserScript==
 //
@@ -82,7 +82,7 @@
         EventTarget.prototype.addEventListener = function(type, listener, options) {
             const forbiddenEvents = ['paste', 'copy', 'cut', 'selectstart'];
             if (forbiddenEvents.includes(type)) {
-                console.log(`Blocked a script from adding a '${type}' event listener.`);
+                console.log(`[Remove ReadOnly] Blocked a script from adding a '${type}' event listener.`);
                 return; // Silently block the addition of the event listener.
             }
             // For all other events, use the original function.
@@ -95,8 +95,11 @@
     // 1. Inject the global CSS overrides for text selection.
     injectGlobalStyles();
 
-    // 2. Prevent scripts from adding new restrictive event listeners.
-    preventEventHijacking();
+    // 2. Prevent scripts from adding new restrictive event listeners, but ONLY
+    //    if we are not on gemini.google.com to avoid conflicts.
+    if (window.location.hostname !== 'gemini.google.com') {
+        preventEventHijacking();
+    }
 
     // 3. Run the main function to enable all elements currently on the page.
     enableElements();
