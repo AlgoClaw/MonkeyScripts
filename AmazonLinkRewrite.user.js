@@ -4,7 +4,7 @@
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/AmazonLinkRewrite.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/MonkeyScripts/main/AmazonLinkRewrite.user.js
 // @description null
-// @version     2025.04.10
+// @version     2025.07.04
 // @grant       none
 // @include     *
 // ==/UserScript==
@@ -13,7 +13,8 @@
 // Define REGEX patterns to find and replace
 const TSTSTR = 'amazon'
 var FIND001 = 'https:\/\/.*amazon\.com.*\/dp(\/[A-z0-9]{10}).*'
-var FIND002 = 'https:\/\/.*amazon\.com.*\/gp\/product(\/[A-z0-9]{10}).*'
+var FIND002 = 'https:\/\/.*amazon\.com.*\/dp\/product(\/[A-z0-9]{10}).*'
+var FIND003 = 'https:\/\/.*amazon\.com.*\/gp\/product(\/[A-z0-9]{10}).*'
 var REPLACE = 'https:\/\/amazon.com\/dp$1'
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +33,7 @@ function RewriteLinks() {
                 //console.log(thisLink.href); // link before change
                 thisLink.href = thisLink.href.replace(RegExp(FIND001),REPLACE);
                 thisLink.href = thisLink.href.replace(RegExp(FIND002),REPLACE);
+                thisLink.href = thisLink.href.replace(RegExp(FIND003),REPLACE);
                 //console.log(thisLink.href); // link after change
             }
         }
@@ -50,6 +52,7 @@ function change_link(event) {
         //console.log(link.href); // link before change
         thisLink.href = thisLink.href.replace(RegExp(FIND001),REPLACE);
         thisLink.href = thisLink.href.replace(RegExp(FIND002),REPLACE);
+        thisLink.href = thisLink.href.replace(RegExp(FIND003),REPLACE);
         //console.log(link.href); // link after change
         }
     }
