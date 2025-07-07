@@ -3,7 +3,7 @@
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/PatentCenter_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/PatentCenter_UI_Fix.user.js
-// @version     2025.06.17.02
+// @version     2025.07.07.01
 // @description null
 // @include     *://patentcenter.uspto.gov/*
 // @grant       GM_addStyle
@@ -209,28 +209,58 @@
             data.status = clone.textContent.trim().replace(/\s+/g, ' ');
         }
 
-        // MODIFICATION: Clean up the Patent Number field
-        const patentNumElem = findDataByLabel('Patent #');
-        if (patentNumElem) {
-            const fullText = patentNumElem.textContent.trim();
-            // Use a regex to extract only the number, which may include commas.
-            const match = fullText.match(/^[\d,]+/);
-            data.patentNumber = match ? match[0] : fullText;
-        }
-
         const titleH3 = document.querySelector('h3.d-inline-block');
         if (titleH3) data.title = titleH3.textContent.trim();
 
+        // --- Handle Patent Number and Date ---
+        const patentNumElem = findDataByLabel('Patent #');
+        data.patentDate = '-'; // Default value
+        data.patentNumber = '-'; // Default value
+
+        if (patentNumElem && patentNumElem.textContent.trim() !== '-') {
+            const clone = patentNumElem.cloneNode(true);
+
+            // Find links based on specific parts of their href or text content
+            const mainLink = clone.querySelector('a[href*="db=USPAT"]');
+            const pdfLink = Array.from(clone.querySelectorAll('a')).find(a => a.textContent.includes('PDF'));
+            const textLink = Array.from(clone.querySelectorAll('a')).find(a => a.textContent === 'Text');
+
+            // Build the patent number string with links
+            let finalPatentValue = '';
+            if (mainLink) {
+                finalPatentValue += mainLink.outerHTML;
+            }
+            if (pdfLink) {
+                finalPatentValue += '&nbsp;' + pdfLink.outerHTML;
+            }
+            if (textLink) {
+                finalPatentValue += '&nbsp;' + textLink.outerHTML;
+            }
+
+            if (finalPatentValue.trim()) {
+                data.patentNumber = finalPatentValue;
+            } else {
+                // Fallback if specific links aren't found, just grab the number part
+                const patentNumMatch = patentNumElem.textContent.match(/[\d,]+/);
+                data.patentNumber = patentNumMatch ? patentNumMatch[0] : '-';
+            }
+
+            // Extract the issue date separately from the full text content
+            const fullText = patentNumElem.textContent;
+            const dateMatch = fullText.match(/Issued - (\d{1,2}\/\d{1,2}\/\d{4})/);
+            if (dateMatch && dateMatch[1]) {
+                data.patentDate = dateMatch[1];
+            }
+        }
+
         // --- Handle Publication Number ---
         const storageKey = `pubNum_${data.appNumber}`;
-        // Find the publication link directly by its unique URL structure, which is more reliable.
         const pubLink = document.querySelector('a[href*="ppubs.uspto.gov/pubwebapp/external.html"]');
         if (pubLink) {
             const pubNum = pubLink.textContent.trim().replace(/ /g, '').replace(/-/g, '');
             sessionStorage.setItem(storageKey, pubNum);
             data.publicationNumber = pubNum;
         } else {
-            // If not on the current page, try to retrieve it from session storage.
             data.publicationNumber = sessionStorage.getItem(storageKey) || '-';
         }
 
@@ -247,8 +277,8 @@
                     <tr><td>U.S. Filing Date</td><td>${data.filingDate || '-'}</td></tr>
                     <tr><td>Title</td><td>${data.title || '-'}</td></tr>
                     <tr><td>Status</td><td>${data.status || '-'}</td></tr>
-                    <!-- <tr><td>Publication #</td><td>${data.publicationNumber || '-'}</td></tr> -->
                     <tr><td>Patent #</td><td>${data.patentNumber || '-'}</td></tr>
+                    <tr><td>Patent Date</td><td>${data.patentDate || '-'}</td></tr>
                 </tbody>
             </table>
         `;
@@ -303,7 +333,6 @@
         data.groupArtUnit = getTextFromLabel('Group art unit');
         data.classSubclass = getTextFromLabel('Class/subclass');
         data.aia = getTextFromLabel('AIA (first inventor to file)');
-        data.pubNumber = getTextFromLabel('Earliest publication #');
         data.pubDate = getTextFromLabel('Earliest publication date');
         data.confirmation = getTextFromLabel('Confirmation #');
         data.intlReg = getTextFromLabel('Intl. registration #');
@@ -315,10 +344,18 @@
         // Examiner (name and phone are in separate divs)
         const examinerElem = findElementByLabel('Examiner');
         if (examinerElem) {
-            const nameDiv = examinerElem.querySelector('div:first-child');
+            const nameDiv = examinerElem.querySelector('div:not(.text-muted)');
             const phoneDiv = examinerElem.querySelector('div.text-muted');
-            data.examinerName = nameDiv ? nameDiv.textContent.trim() : null;
-            data.examinerPhone = phoneDiv ? phoneDiv.textContent.trim() : null;
+
+            if (nameDiv) {
+                // Handles the case with separate divs for name and phone
+                data.examinerName = nameDiv.textContent.trim();
+                data.examinerPhone = phoneDiv ? phoneDiv.textContent.trim() : null;
+            } else if (examinerElem.textContent.trim()) {
+                // Handles the case where the element just contains text (the name)
+                data.examinerName = examinerElem.textContent.trim();
+                data.examinerPhone = null;
+            }
         }
 
         // Entity Status (has an "Edit" button to be removed)
@@ -346,6 +383,46 @@
             const locationDiv = applicantElem.querySelector('li > div.text-muted');
             data.applicantName = nameDiv ? nameDiv.textContent.trim() : null;
             data.applicantLocation = locationDiv ? locationDiv.textContent.trim() : null;
+        }
+
+        // Earliest Publication Number
+        const pubElem = findElementByLabel('Earliest publication #');
+        if (pubElem && pubElem.textContent.trim() !== '-') {
+            const clone = pubElem.cloneNode(true);
+            const mainLink = clone.querySelector('a');
+            const pdfButton = Array.from(clone.querySelectorAll('button, a')).find(el => el.textContent.includes('PDF'));
+            const textButton = Array.from(clone.querySelectorAll('button, a')).find(el => el.textContent.includes('Text'));
+
+            let pubNumberText = '';
+
+            // The publication number is usually the text content of the main link.
+            if (mainLink) {
+                const linkClone = mainLink.cloneNode(true);
+                // Remove the 'open_in_new' icon text to get just the number.
+                const icon = linkClone.querySelector('i');
+                if (icon) icon.remove();
+                pubNumberText = linkClone.textContent.trim();
+            } else {
+                // Fallback: If no link, find the first significant text node.
+                const textNode = Array.from(clone.childNodes).find(node => node.nodeType === Node.TEXT_NODE && node.textContent.trim().length > 2);
+                if (textNode) {
+                    pubNumberText = textNode.textContent.trim();
+                }
+            }
+
+            // Reconstruct the value with the number followed by the links.
+            let finalPubValue = pubNumberText;
+            if (pdfButton) {
+                // Add a non-breaking space for better formatting.
+                finalPubValue += '&nbsp;' + pdfButton.outerHTML;
+            }
+            if (textButton) {
+                finalPubValue += '&nbsp;' + textButton.outerHTML;
+            }
+            data.pubNumber = finalPubValue;
+        } else {
+            // If no publication element or it's just a hyphen, get the plain text.
+            data.pubNumber = getTextFromLabel('Earliest publication #');
         }
 
 
