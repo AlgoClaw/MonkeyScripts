@@ -1,11 +1,11 @@
 // ==UserScript==
-// @name        Node-RED UI Fix
+// @name        UI Mod - Node-RED
 // @homepageURL https://github.com/AlgoClaw/UImods/blob/main/NodeRED_UI_Fix.user.js
 // @downloadURL https://raw.githubusercontent.com/AlgoClaw/UImods/main/NodeRED_UI_Fix.user.js
 // @updateURL   https://raw.githubusercontent.com/AlgoClaw/UImods/main/NodeRED_UI_Fix.user.js
 // @include     *://*:1880/*
 // @description null
-// @version     0.002
+// @version     2025.10.04.12.03.20
 //
 // ==/UserScript==
 //
@@ -127,6 +127,9 @@ var CSSMod = /** @class */ (function () {
         css += "[id=red-ui-notifications] {height: fit-content !important;}\n"; //
         css += "[id=red-ui-notifications] {margin-left: 0 !important;}\n"; //
         css += "[id=red-ui-notifications] {left: 0 !important;}\n"; //
+        //
+        // Hide stupid drag-drop overlay that blocks interaction and doesn;t go away
+        css += "[id=red-ui-drop-target] {display: none !important;}\n"; //
         //
         return css;
     };
